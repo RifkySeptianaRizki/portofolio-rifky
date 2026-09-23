@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Grid3X3, ArrowRight, User, Folder, Sparkles, Clock } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const ParticleOrb = dynamic(() => import("./ParticleOrb"), { ssr: false });
 const LinkedinIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -45,7 +48,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="p-2 md:p-3 h-screen">
+    <div className="p-2 md:p-3 h-[75svh] md:h-screen">
       <section
         className="relative w-full h-full overflow-hidden bg-[#050505] rounded-[1.25rem] md:rounded-[1.75rem] flex flex-col"
         style={{ border: "1px solid rgba(255,255,255,0.04)" }}
@@ -324,7 +327,7 @@ export default function Hero() {
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute z-20 left-[-2%] md:left-[-7%] lg:left-[9%] bottom-[8%] md:bottom-[-5%] lg:bottom-[-22%] w-[102%] sm:w-[60%] md:w-[50%] lg:w-[75%] h-[90%] md:h-[95%] lg:h-[130%] pointer-events-none select-none"
+            className="absolute z-20 right-[-8%] left-auto md:left-[-7%] lg:left-[9%] md:right-auto bottom-[4%] md:bottom-[-5%] lg:bottom-[-22%] w-[110%] sm:w-[60%] md:w-[50%] lg:w-[75%] h-[100%] md:h-[95%] lg:h-[130%] pointer-events-none select-none"
           >
             {/* Ambient soft light glow behind the person */}
             <div className="absolute left-[10%] bottom-[15%] w-[60%] h-[60%] bg-[#ffffff] opacity-[0.05] blur-[100px] rounded-full z-0" />
@@ -337,7 +340,7 @@ export default function Hero() {
               <img 
                 src="/profil-rifky.png" 
                 alt="Rifky Septian Arizki" 
-                className="w-full h-full object-contain object-left-bottom opacity-95"
+                className="w-full h-full object-contain object-right-bottom md:object-left-bottom opacity-95"
                 style={{
                   maskImage: "linear-gradient(to top, transparent 0%, black 15%, black 100%)",
                   WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 15%, black 100%)"
@@ -346,37 +349,49 @@ export default function Hero() {
             </div>
           </motion.div>
 
+          {/* ─── GLOWING ANIMATED PARTICLE ORB (Top Left on Mobile, Behind Head on Desktop) ─── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
+            className="absolute z-10 top-[1%] left-[-1%] md:top-[5%] md:left-[6%] lg:top-[0%] lg:left-[19%] pointer-events-none scale-[1.15] md:scale-[1.2] lg:scale-[1.7]"
+          >
+            <ParticleOrb />
+          </motion.div>
+
           {/* ─── HEADLINE (center-right, vertically centered in upper half) ─── */}
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute z-20 top-[20%] md:top-[5%] right-[3%] md:right-[5%] lg:right-[6%] max-w-[265px] sm:max-w-[320px] md:max-w-[500px] lg:max-w-[650px] text-[19px] sm:text-[22px] md:text-[28px] lg:text-[32px] font-medium leading-[1.2] tracking-[-0.02em] text-right md:text-left"
+            className="absolute z-20 top-[48%] md:top-[8%] left-[5%] md:left-auto right-auto md:right-[2%] lg:right-[3%] w-[78%] sm:w-auto sm:max-w-[320px] md:max-w-[600px] lg:max-w-[750px] text-[17px] sm:text-[22px] md:text-[28px] lg:text-[32px] font-medium leading-[1.2] tracking-[-0.02em] text-left"
           >
-            <span 
-              style={{
-                background: "linear-gradient(110deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 20%, rgba(255,255,255,1) 40%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.9) 80%, rgba(255,255,255,1) 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.9)) drop-shadow(0px 1px 1px rgba(255,255,255,0.4))"
-              }}
-            >
-              Fresh graduate in Informatics.{" "}
-            </span>
-            <span 
-              style={{
-                background: "linear-gradient(110deg, rgba(200,200,200,0.9) 0%, rgba(150,150,150,0.5) 20%, rgba(200,200,200,0.8) 40%, rgba(100,100,100,0.3) 60%, rgba(180,180,180,0.7) 80%, rgba(200,200,200,0.9) 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.9)) drop-shadow(0px 1px 1px rgba(255,255,255,0.2))"
-              }}
-            >
-              Specializing in full-stack web development, UI/UX design, and robust IT system maintenance.
-            </span>
+            <div className="relative z-10">
+              <span 
+                style={{
+                  background: "linear-gradient(110deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 20%, rgba(255,255,255,1) 40%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.9) 80%, rgba(255,255,255,1) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8)) drop-shadow(0px 0px 8px rgba(200,215,225,0.25))"
+                }}
+              >
+                Full-Stack Developer, UI/UX Designer & Tech Lead.{" "}
+              </span>
+              <span 
+                style={{
+                  background: "linear-gradient(110deg, rgba(200,200,200,0.9) 0%, rgba(150,150,150,0.5) 20%, rgba(200,200,200,0.8) 40%, rgba(100,100,100,0.3) 60%, rgba(180,180,180,0.7) 80%, rgba(200,200,200,0.9) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8)) drop-shadow(0px 0px 6px rgba(200,215,225,0.2))"
+                }}
+              >
+                Building scalable web apps, managing IT systems, and leading impactful teams.
+              </span>
+            </div>
           </motion.h1>
 
           {/* ─── BOTTOM INFO BAR (Metrics) ─── */}
-          <div className="absolute bottom-[23%] md:bottom-[56%] left-0 right-0 z-30 flex items-start justify-between px-5 md:px-10 gap-2 md:gap-4">
+          <div className="absolute bottom-[20%] md:bottom-[56%] left-0 right-0 z-30 flex items-start justify-between px-5 md:px-10 gap-2 md:gap-4">
             
             {/* Metric 1 */}
             <motion.div
