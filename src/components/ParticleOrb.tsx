@@ -168,8 +168,8 @@ export default function ParticleOrb() {
       ctx!.clearRect(0, 0, size, size);
       
       // Update time based on real elapsed time (16.6ms is roughly 60fps)
-      // 0.012 per frame at 60fps = ~0.00072 per ms
-      time += deltaTime * 0.00072;
+      // Slowed down animation speed (very majestic, slow rotation)
+      time += deltaTime * 0.00015;
 
       // Ambient silver glow — left side
       const glow1 = ctx!.createRadialGradient(cx - 25, cy + 15, 0, cx - 25, cy + 15, 85);

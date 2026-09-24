@@ -7,7 +7,8 @@ export const PORTFOLIO_DATA = {
       phone: "+62 819 5998 6108",
       email: "rifkiseptianarizki@gmail.com",
       linkedin: "https://linkedin.com/in/rifky-septiana-rizki",
-      github: "https://github.com",
+      github: "https://github.com/RifkySeptianaRizki",
+      instagram: "https://instagram.com/rifkyseptianarizki",
     },
     shortBio: "Fresh graduate Sarjana Informatika Universitas Sebelas April (IPK 3.68) specializing in full-stack web development, UI/UX design, and IT system maintenance. Proven leadership in university and public organizations.",
     mission: "Software engineer shaping resilient web applications and impactful digital products from Sumedang."
@@ -20,51 +21,51 @@ export const PORTFOLIO_DATA = {
   projects: [
     {
       id: 1,
-      title: "Lumina Fund - Platform Donasi & Seleksi Beasiswa Mahasiswa",
+      title: "Lumina Fund",
       role: "Full-Stack Developer (PT Sadigit Intern)",
       year: "2025",
       stack: ["React.js", "Node.js", "Express.js", "Tailwind CSS", "RESTful API"],
-      description: "Integrated philanthropy platform for student financial aid with administrative verification modules and transparent transaction records."
+      description: "Integrated philanthropy platform for student financial aid with transparent verification and transaction records."
     },
     {
       id: 2,
-      title: "SuperChallenge Esport Tournament Engine",
+      title: "SuperChallenge Esport",
       role: "Full-Stack Developer (Kemitraan Djarum Super)",
       year: "2024",
       stack: ["React.js", "Supabase", "Express.js", "Dynamic Bracket Algorithm"],
-      description: "Automated Mobile Legends competition platform with dynamic bracket generation, live scoring, and rule compliance."
+      description: "Automated e-sports platform with dynamic bracket generation and live scoring systems."
     },
     {
       id: 3,
-      title: "AI-Integrated Financial Management System",
+      title: "AI Financial Tracker",
       role: "Full-Stack Developer",
       year: "2024",
       stack: ["TypeScript", "Express.js", "PostgreSQL", "AI/OCR Integration", "Data Analytics"],
-      description: "Smart financial tracker featuring automatic OCR receipt scanning and trend visualization."
+      description: "Smart financial SaaS featuring automated OCR receipt scanning and robust data analytics."
     },
     {
       id: 4,
-      title: "Platform Digitalisasi UMKM UNSAP",
+      title: "UMKM Digital Portal",
       role: "Full-Stack Developer",
       year: "2024",
       stack: ["Flutter", "React.js", "RESTful API", "Responsive Web"],
-      description: "Digital business portal empowering student entrepreneurs to showcase product catalogs and automate ordering."
+      description: "Digital business portal empowering entrepreneurs to showcase catalogs and automate ordering."
     },
     {
       id: 5,
-      title: "Sistem Manajemen Member & Audit GYM 151",
+      title: "Gym 151 Manager",
       role: "Full-Stack Developer",
       year: "2023",
       stack: ["React.js", "Express.js", "Supabase", "RBAC", "Financial Ledger"],
-      description: "SaaS gym operational management system for memberships, attendance tracking, and internal audit reconciliation."
+      description: "Gym management system for membership tiers, attendance tracking, and financial ledgers."
     },
     {
       id: 6,
-      title: "Sistem Manajemen Debat Terpadu",
+      title: "Debate Management System",
       role: "Front-End Developer (Kemitraan UNSAP)",
       year: "2023",
       stack: ["JavaScript", "Tailwind CSS", "Real-time Scoring"],
-      description: "Debate competition software with randomized motion draws, automated team matchmaking, and real-time jury scoring."
+      description: "Debate competition engine with automated matchmaking and real-time jury scoring."
     }
   ],
   expertise: [
@@ -131,7 +132,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: 6,
-      role: "Ketua Divisi Pengmas",
+      role: "Ketua Divisi P2M",
       company: "UKM TahuNgoding UNSAP",
       period: "2023 - 2024",
       description: "Spearheaded community outreach initiatives, bridging the gap between student developers and local societal needs."
@@ -141,17 +142,17 @@ export const PORTFOLIO_DATA = {
     {
       id: 1,
       question: "What is your core tech stack?",
-      answer: "I specialize in the JavaScript/TypeScript ecosystem with Next.js, React.js for the frontend, and Node.js/Express.js for the backend. I also have strong experience with relational databases like PostgreSQL and MySQL, and mobile development using Flutter."
+      answer: "I specialize in the Next.js, React, and Node.js ecosystem, alongside PostgreSQL and Flutter."
     },
     {
       id: 2,
       question: "Are you available for full-time roles or freelance projects?",
-      answer: "I am open to both. As a fresh graduate with practical internship and freelance experience, I am eager to join a forward-thinking team full-time or collaborate on impactful freelance projects."
+      answer: "I'm open to both! Whether joining a team full-time or collaborating on freelance projects."
     },
     {
       id: 3,
       question: "How do you approach full-stack project development?",
-      answer: "I focus on scalable architecture and seamless user experiences. I start with wireframing in Figma, define the database schema, build a robust backend, and then craft a responsive, animated frontend that adheres to modern design systems."
+      answer: "I focus on scalable architecture and seamless UX. From Figma wireframes to a robust backend and an animated frontend."
     }
   ]
 };

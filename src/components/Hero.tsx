@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Grid3X3, ArrowRight, User, Folder, Sparkles, Clock } from "lucide-react";
+import { Plus, Grid3X3, ArrowRight, User, Folder, Sparkles, Clock, HelpCircle, Mail } from "lucide-react";
 import dynamic from "next/dynamic";
+import { PORTFOLIO_DATA } from "@/data/portfolio";
 
 const ParticleOrb = dynamic(() => import("./ParticleOrb"), { ssr: false });
 const LinkedinIcon = ({ size = 20 }) => (
@@ -14,9 +15,9 @@ const LinkedinIcon = ({ size = 20 }) => (
   </svg>
 );
 
-const TwitterIcon = ({ size = 20 }) => (
+const GithubIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
   </svg>
 );
 
@@ -48,7 +49,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="p-2 md:p-3 h-[75svh] md:h-screen">
+    <div className="p-2 md:p-3 h-[85svh] md:h-screen">
       <section
         className="relative w-full h-full overflow-hidden bg-[#050505] rounded-[1.25rem] md:rounded-[1.75rem] flex flex-col"
         style={{ border: "1px solid rgba(255,255,255,0.04)" }}
@@ -266,10 +267,10 @@ export default function Hero() {
                 {/* Main Links */}
                 <div className="flex flex-col gap-1">
                   {[
-                    { name: "About", icon: User, href: "#about" },
+                    { name: "Experience", icon: Clock, href: "#experience" },
                     { name: "Projects", icon: Folder, href: "#projects" },
                     { name: "Expertise", icon: Sparkles, href: "#expertise" },
-                    { name: "Experience", icon: Clock, href: "#experience" }
+                    { name: "FAQ", icon: HelpCircle, href: "#faq" }
                   ].map((item, i) => {
                     const Icon = item.icon;
                     return (
@@ -295,19 +296,36 @@ export default function Hero() {
                   )})}
                 </div>
 
-                {/* Social Media */}
+                {/* Connect */}
                 <div className="mt-4">
-                  <h3 className="text-white/30 text-[11px] font-semibold mb-4 uppercase tracking-wider">Social media</h3>
-                  <div className="flex gap-4">
+                  <h3 className="text-white/30 text-[11px] font-semibold uppercase tracking-wider mb-4">Connect</h3>
+                  <div className="grid grid-cols-2 gap-y-4 gap-x-4">
                     {[
-                      { name: 'LinkedIn', icon: LinkedinIcon, href: "#" },
-                      { name: 'Twitter', icon: TwitterIcon, href: "#" },
-                      { name: 'Instagram', icon: InstagramIcon, href: "#" }
-                    ].map(({ name, icon: Icon, href }) => (
-                      <a key={name} href={href} className="text-white/60 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full" aria-label={name}>
-                        <Icon size={20} />
-                      </a>
-                    ))}
+                      { name: 'LinkedIn', icon: LinkedinIcon, href: PORTFOLIO_DATA.profile.contact.linkedin },
+                      { name: 'GitHub', icon: GithubIcon, href: PORTFOLIO_DATA.profile.contact.github },
+                      { name: 'Instagram', icon: InstagramIcon, href: PORTFOLIO_DATA.profile.contact.instagram },
+                      { name: 'Email', icon: Mail, href: `mailto:${PORTFOLIO_DATA.profile.contact.email}` }
+                    ].map((item, i) => {
+                      const Icon = item.icon;
+                      return (
+                        <a 
+                          key={i} 
+                          href={item.href} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="group flex items-center gap-3 px-4 py-3 rounded-full opacity-80 hover:opacity-100 hover:scale-[1.02] transition-all duration-300 relative overflow-hidden text-white/90 hover:text-white text-sm font-medium"
+                          style={{
+                            background: "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%)",
+                            boxShadow: "0 4px 15px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.15)",
+                            backdropFilter: "blur(10px)",
+                            WebkitBackdropFilter: "blur(10px)",
+                          }}
+                        >
+                          <Icon size={18} className="text-white/80 group-hover:text-white transition-colors" />
+                          {item.name}
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -364,7 +382,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute z-20 top-[48%] md:top-[8%] left-[5%] md:left-auto right-auto md:right-[2%] lg:right-[3%] w-[78%] sm:w-auto sm:max-w-[320px] md:max-w-[600px] lg:max-w-[750px] text-[17px] sm:text-[22px] md:text-[28px] lg:text-[32px] font-medium leading-[1.2] tracking-[-0.02em] text-left"
+            className="absolute z-20 top-[46%] md:top-[8%] left-[5%] md:left-auto right-auto md:right-[2%] lg:right-[3%] w-[88%] sm:w-[80%] md:max-w-[600px] lg:max-w-[750px] text-[16px] sm:text-[22px] md:text-[28px] lg:text-[32px] font-medium leading-[1.2] tracking-[-0.02em] text-left"
           >
             <div className="relative z-10">
               <span 
@@ -391,7 +409,7 @@ export default function Hero() {
           </motion.h1>
 
           {/* ─── BOTTOM INFO BAR (Metrics) ─── */}
-          <div className="absolute bottom-[20%] md:bottom-[56%] left-0 right-0 z-30 flex items-start justify-between px-5 md:px-10 gap-2 md:gap-4">
+          <div className="absolute bottom-[22%] md:bottom-[56%] left-0 right-0 z-30 flex items-start justify-between px-5 md:px-10 gap-2 md:gap-4">
             
             {/* Metric 1 */}
             <motion.div
@@ -454,8 +472,8 @@ export default function Hero() {
                 style={{
                   background: "linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.1) 48%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.8) 100%)",
                   filter: "blur(16px)",
-                  mask: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150'%3E%3Ctext x='51.5%25' y='65%25' dominant-baseline='middle' text-anchor='middle' font-family='Satoshi, sans-serif' font-weight='900' font-size='130' letter-spacing='18' fill='white'%3ERIFKY%3C/text%3E%3C/svg%3E\") center bottom / 100% auto no-repeat",
-                  WebkitMask: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150'%3E%3Ctext x='51.5%25' y='65%25' dominant-baseline='middle' text-anchor='middle' font-family='Satoshi, sans-serif' font-weight='900' font-size='130' letter-spacing='18' fill='white'%3ERIFKY%3C/text%3E%3C/svg%3E\") center bottom / 100% auto no-repeat",
+                  mask: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150'%3E%3Ctext x='51.5%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Satoshi, sans-serif' font-weight='900' font-size='130' letter-spacing='18' fill='white'%3ERIFKY%3C/text%3E%3C/svg%3E\") center bottom / 100% auto no-repeat",
+                  WebkitMask: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150'%3E%3Ctext x='51.5%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Satoshi, sans-serif' font-weight='900' font-size='130' letter-spacing='18' fill='white'%3ERIFKY%3C/text%3E%3C/svg%3E\") center bottom / 100% auto no-repeat",
                 }}
               />
             </motion.div>
@@ -473,8 +491,8 @@ export default function Hero() {
                   background: "linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.15) 100%)",
                   backdropFilter: "blur(16px) saturate(120%)",
                   WebkitBackdropFilter: "blur(16px) saturate(120%)",
-                  mask: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150'%3E%3Ctext x='51.5%25' y='65%25' dominant-baseline='middle' text-anchor='middle' font-family='Satoshi, sans-serif' font-weight='900' font-size='130' letter-spacing='18' fill='white'%3ERIFKY%3C/text%3E%3C/svg%3E\") center bottom / 100% auto no-repeat",
-                  WebkitMask: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150'%3E%3Ctext x='51.5%25' y='65%25' dominant-baseline='middle' text-anchor='middle' font-family='Satoshi, sans-serif' font-weight='900' font-size='130' letter-spacing='18' fill='white'%3ERIFKY%3C/text%3E%3C/svg%3E\") center bottom / 100% auto no-repeat",
+                  mask: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150'%3E%3Ctext x='51.5%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Satoshi, sans-serif' font-weight='900' font-size='130' letter-spacing='18' fill='white'%3ERIFKY%3C/text%3E%3C/svg%3E\") center bottom / 100% auto no-repeat",
+                  WebkitMask: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 150'%3E%3Ctext x='51.5%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Satoshi, sans-serif' font-weight='900' font-size='130' letter-spacing='18' fill='white'%3ERIFKY%3C/text%3E%3C/svg%3E\") center bottom / 100% auto no-repeat",
                 }}
               />
               <svg 
@@ -490,7 +508,7 @@ export default function Hero() {
                     <stop offset="100%" stopColor="rgba(255,255,255,0.4)" />
                   </linearGradient>
                 </defs>
-                <text x="51.5%" y="65%" dominantBaseline="middle" textAnchor="middle" fontFamily="Satoshi, sans-serif" fontWeight="900" fontSize="130" letterSpacing="18" fill="none" stroke="url(#glassEdgeMobile)" strokeWidth="1.5">RIFKY</text>
+                <text x="51.5%" y="50%" dominantBaseline="middle" textAnchor="middle" fontFamily="Satoshi, sans-serif" fontWeight="900" fontSize="130" letterSpacing="18" fill="none" stroke="url(#glassEdgeMobile)" strokeWidth="1.5">RIFKY</text>
               </svg>
             </motion.div>
           </div>
