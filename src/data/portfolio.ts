@@ -1,3 +1,17 @@
+export interface ProjectItem {
+  id: number;
+  title: string;
+  subtitle?: string;
+  role: string;
+  year: string;
+  stack: string[];
+  description: string;
+  highlights?: string[];
+  hashtags?: string[];
+  cover: string;
+  slides: string[];
+}
+
 export const PORTFOLIO_DATA = {
   profile: {
     fullName: "Rifky Septiana Rizki",
@@ -21,51 +35,140 @@ export const PORTFOLIO_DATA = {
   projects: [
     {
       id: 1,
-      title: "Lumina Fund",
+      title: "LuminaFund – Platform Donasi & Beasiswa",
+      subtitle: "PT Sadigit • FTI UNSAP",
       role: "Full-Stack Developer (PT Sadigit Intern)",
       year: "2025",
       stack: ["React.js", "Node.js", "Express.js", "Tailwind CSS", "RESTful API"],
-      description: "Integrated philanthropy platform for student financial aid with transparent verification and transaction records."
+      description: "Platform filantropi terintegrasi untuk menyalurkan bantuan finansial mahasiswa prasejahtera FTI UNSAP; dilengkapi modul verifikasi administrasi dan rekam jejak transaksi donasi secara transparan.",
+      highlights: [
+        "Arsitektur front-end responsif & integrasi REST API",
+        "Modul seleksi beasiswa & verifikasi berkas mahasiswa",
+        "Transparansi rekam jejak penyaluran dana donasi"
+      ],
+      hashtags: ["#LuminaFund", "#ReactJS", "#NodeJS", "#ExpressJS", "#TailwindCSS", "#FullStackDev"],
+      cover: "/Portofolio/cover-lumina.svg",
+      slides: [
+        "/Portofolio/cover-lumina.svg",
+        "/Portofolio/lumina1.svg",
+        "/Portofolio/lumina2.svg",
+        "/Portofolio/lumina3.svg",
+        "/Portofolio/lumina4.svg"
+      ]
     },
     {
       id: 2,
-      title: "SuperChallenge Esport",
+      title: "SuperChallenge Esport – Tournament Engine",
+      subtitle: "Kemitraan Komunitas Djarum Super",
       role: "Full-Stack Developer (Kemitraan Djarum Super)",
       year: "2024",
       stack: ["React.js", "Supabase", "Express.js", "Dynamic Bracket Algorithm"],
-      description: "Automated e-sports platform with dynamic bracket generation and live scoring systems."
+      description: "Sistem manajemen kompetisi Mobile Legends otomatis untuk kalkulasi poin, penjadwalan bagan pertandingan (dynamic tournament bracket), live scoring, dan penegakan regulasi turnamen.",
+      highlights: [
+        "Dynamic Bracket Algorithm untuk bagan pertandingan otomatis",
+        "Real-time live scoring & klasemen tim peserta",
+        "Manajemen registrasi tim dan jadwal Grand Finals"
+      ],
+      hashtags: ["#SuperChallenge", "#TournamentEngine", "#ReactJS", "#Supabase", "#Esports", "#WebDev"],
+      cover: "/Portofolio/cover-sc.svg",
+      slides: [
+        "/Portofolio/cover-sc.svg",
+        "/Portofolio/sc1.svg",
+        "/Portofolio/sc2.svg",
+        "/Portofolio/sc3.svg",
+        "/Portofolio/sc4.svg"
+      ]
     },
     {
       id: 3,
-      title: "AI Financial Tracker",
+      title: "M-Finance – AI Financial Management System",
+      subtitle: "Smart Financial SaaS & OCR Tracker",
       role: "Full-Stack Developer",
       year: "2024",
       stack: ["TypeScript", "Express.js", "PostgreSQL", "AI/OCR Integration", "Data Analytics"],
-      description: "Smart financial SaaS featuring automated OCR receipt scanning and robust data analytics."
+      description: "Aplikasi pencatatan keuangan pintar (SaaS) dengan kapabilitas pemindaian struk berbasis AI/OCR secara otomatis serta visualisasi analisis tren pengeluaran dan arus kas berkala.",
+      highlights: [
+        "Pemindaian struk belanja otomatis berbasis AI/OCR",
+        "Visualisasi grafik analitik pemasukan & pengeluaran",
+        "Manajemen anggaran & pelacakan transaksi real-time"
+      ],
+      hashtags: ["#MFinance", "#TypeScript", "#PostgreSQL", "#AIFinance", "#OCR", "#SaaS"],
+      cover: "/Portofolio/cover-finance.svg",
+      slides: [
+        "/Portofolio/cover-finance.svg",
+        "/Portofolio/finance1.svg",
+        "/Portofolio/finance2.svg",
+        "/Portofolio/finance3.svg",
+        "/Portofolio/finance4.svg"
+      ]
     },
     {
       id: 4,
-      title: "UMKM Digital Portal",
+      title: "UMKM UNSAP – Digital Startup Portal",
+      subtitle: "Universitas Sebelas April Sumedang",
       role: "Full-Stack Developer",
       year: "2024",
       stack: ["Flutter", "React.js", "RESTful API", "Responsive Web"],
-      description: "Digital business portal empowering entrepreneurs to showcase catalogs and automate ordering."
+      description: "Wadah digital bagi wirausaha mahasiswa UNSAP untuk memamerkan katalog produk dan jasa, memperluas jangkauan pasar lokal, serta mengotomasi sistem pemesanan dasar.",
+      highlights: [
+        "Etalase katalog produk & jasa wirausaha mahasiswa",
+        "Integrasi pemesanan langsung & manajemen toko",
+        "Desain responsif lintas perangkat (Web & Mobile)"
+      ],
+      hashtags: ["#UMKMUNSAP", "#DigitalStartup", "#ReactJS", "#Flutter", "#RESTfulAPI", "#UNSAP"],
+      cover: "/Portofolio/cover-umkm.svg",
+      slides: [
+        "/Portofolio/cover-umkm.svg",
+        "/Portofolio/umkm1.svg",
+        "/Portofolio/umkm2.svg",
+        "/Portofolio/umkm3.svg"
+      ]
     },
     {
       id: 5,
-      title: "Gym 151 Manager",
+      title: "Sistem Manajemen Member & Audit GYM 151",
+      subtitle: "Gym Operations & Financial Ledger SaaS",
       role: "Full-Stack Developer",
       year: "2023",
       stack: ["React.js", "Express.js", "Supabase", "RBAC", "Financial Ledger"],
-      description: "Gym management system for membership tiers, attendance tracking, and financial ledgers."
+      description: "Platform SaaS operasional pusat kebugaran untuk mengelola keanggotaan aktif, paket langganan berkala, riwayat kehadiran member, dan rekonsiliasi audit finansial internal.",
+      highlights: [
+        "Role-Based Access Control (RBAC) untuk staf & pemilik",
+        "Pencatatan invoice otomatis & audit pembukuan",
+        "Monitoring masa aktif membership & presensi harian"
+      ],
+      hashtags: ["#Gym151", "#SaaS", "#ReactJS", "#Supabase", "#ExpressJS", "#WebSystem"],
+      cover: "/Portofolio/cover-gym.svg",
+      slides: [
+        "/Portofolio/cover-gym.svg",
+        "/Portofolio/gym1.svg",
+        "/Portofolio/gym2.svg",
+        "/Portofolio/gym3.svg",
+        "/Portofolio/gym4.svg"
+      ]
     },
     {
       id: 6,
-      title: "Debate Management System",
-      role: "Front-End Developer (Kemitraan UNSAP)",
-      year: "2023",
-      stack: ["JavaScript", "Tailwind CSS", "Real-time Scoring"],
-      description: "Debate competition engine with automated matchmaking and real-time jury scoring."
+      title: "Sistem Desak Cakades Desa Baginda",
+      subtitle: "Pilkades & Dialog Terbuka Desa Baginda",
+      role: "Front-End Developer (Desa Baginda)",
+      year: "2024",
+      stack: ["React.js", "Vite", "JavaScript", "Tailwind CSS", "CSS Animation"],
+      description: "Aplikasi tampilan panggung interaktif untuk dialog terbuka calon kepala desa, dilengkapi countdown timer, pengundian giliran calon, bumper profil & sambutan, serta kontrol penuh melalui shortcut keyboard operator.",
+      highlights: [
+        "Countdown timer panggung real-time & audio cue",
+        "Sistem undian giliran otomatis kandidat kepala desa",
+        "Kontrol operator instan via shortcut keyboard"
+      ],
+      hashtags: ["#DesakCakades", "#DesaBaginda", "#ReactJS", "#Vite", "#TailwindCSS", "#InteractiveStage"],
+      cover: "/Portofolio/cover-desak.svg",
+      slides: [
+        "/Portofolio/cover-desak.svg",
+        "/Portofolio/desak1.svg",
+        "/Portofolio/desak2.svg",
+        "/Portofolio/desak3.svg",
+        "/Portofolio/desak4.svg"
+      ]
     }
   ],
   expertise: [
