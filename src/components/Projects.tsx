@@ -43,6 +43,294 @@ const getTechIconSlug = (tech: string) => {
   return null;
 };
 
+interface ProjectCarouselProps {
+  slides: string[];
+  title: string;
+  activeIndex: number;
+  onIndexChange: (index: number) => void;
+  onNext: () => void;
+  onPrev: () => void;
+}
+
+function ProjectCarousel({
+  slides,
+  title,
+  activeIndex,
+  onIndexChange,
+  onNext,
+  onPrev,
+}: ProjectCarouselProps) {
+  const [scale, setScale] = useState(1);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [isPinching, setIsPinching] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Reset zoom on slide change
+  useEffect(() => {
+    setScale(1);
+    setTranslate({ x: 0, y: 0 });
+    setDragOffset(0);
+    setIsDragging(false);
+  }, [activeIndex]);
+
+  const touchStartRef = useRef<{
+    x: number;
+    y: number;
+    dist: number;
+    scale: number;
+    transX: number;
+    transY: number;
+    time: number;
+  }>({
+    x: 0,
+    y: 0,
+    dist: 0,
+    scale: 1,
+    transX: 0,
+    transY: 0,
+    time: 0,
+  });
+
+  const lastTapRef = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 2) {
+      // 2 fingers = pinch-to-zoom
+      setIsPinching(true);
+      setIsDragging(false);
+      setDragOffset(0);
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      touchStartRef.current = {
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+        dist,
+        scale,
+        transX: translate.x,
+        transY: translate.y,
+        time: Date.now(),
+      };
+    } else if (e.touches.length === 1) {
+      const now = Date.now();
+      // Double tap to zoom
+      if (now - lastTapRef.current < 280) {
+        if (scale > 1.15) {
+          setScale(1);
+          setTranslate({ x: 0, y: 0 });
+        } else {
+          setScale(2.2);
+        }
+        lastTapRef.current = 0;
+        return;
+      }
+      lastTapRef.current = now;
+
+      touchStartRef.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+        dist: 0,
+        scale,
+        transX: translate.x,
+        transY: translate.y,
+        time: now,
+      };
+
+      if (scale <= 1.05) {
+        setIsDragging(true);
+      }
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const factor = dist / (touchStartRef.current.dist || 1);
+      const newScale = Math.min(Math.max(1, touchStartRef.current.scale * factor), 4);
+      setScale(newScale);
+
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      const deltaX = midX - touchStartRef.current.x;
+      const deltaY = midY - touchStartRef.current.y;
+      setTranslate({
+        x: touchStartRef.current.transX + deltaX,
+        y: touchStartRef.current.transY + deltaY,
+      });
+    } else if (e.touches.length === 1) {
+      if (scale > 1.05) {
+        // Pan zoomed image
+        const deltaX = e.touches[0].clientX - touchStartRef.current.x;
+        const deltaY = e.touches[0].clientY - touchStartRef.current.y;
+        setTranslate({
+          x: touchStartRef.current.transX + deltaX,
+          y: touchStartRef.current.transY + deltaY,
+        });
+      } else if (isDragging) {
+        // 1:1 real-time drag of slide carousel
+        const deltaX = e.touches[0].clientX - touchStartRef.current.x;
+        const deltaY = e.touches[0].clientY - touchStartRef.current.y;
+        if (Math.abs(deltaX) > Math.abs(deltaY) || Math.abs(dragOffset) > 5) {
+          setDragOffset(deltaX);
+        }
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsPinching(false);
+    if (scale < 1.1) {
+      setScale(1);
+      setTranslate({ x: 0, y: 0 });
+    }
+
+    if (isDragging) {
+      setIsDragging(false);
+      if (dragOffset < -40 && activeIndex < slides.length - 1) {
+        onNext();
+      } else if (dragOffset > 40 && activeIndex > 0) {
+        onPrev();
+      }
+      setDragOffset(0);
+    }
+  };
+
+  const handleDoubleClick = () => {
+    if (scale > 1.15) {
+      setScale(1);
+      setTranslate({ x: 0, y: 0 });
+    } else {
+      setScale(2.2);
+    }
+  };
+
+  return (
+    <div
+      className="relative w-full md:w-auto md:h-full aspect-[4/5] rounded-3xl bg-black overflow-hidden flex items-center justify-center select-none border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] touch-pan-y"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+    >
+      {/* Horizontal Carousel Track */}
+      <div
+        className="flex w-full h-full"
+        style={{
+          transform: `translateX(calc(-${activeIndex * 100}% + ${dragOffset}px))`,
+          transition: isDragging ? "none" : "transform 0.32s cubic-bezier(0.22, 1, 0.36, 1)",
+          willChange: "transform",
+        }}
+      >
+        {slides.map((slideUrl, sIdx) => {
+          const isCurrent = sIdx === activeIndex;
+          const currentScale = isCurrent ? scale * 1.06 : 1.06;
+          const currentX = isCurrent ? translate.x : 0;
+          const currentY = isCurrent ? translate.y : 0;
+
+          return (
+            <div
+              key={sIdx}
+              className="w-full h-full shrink-0 relative overflow-hidden flex items-center justify-center"
+              onDoubleClick={handleDoubleClick}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={slideUrl}
+                alt={`${title} - Slide ${sIdx + 1}`}
+                draggable={false}
+                loading={Math.abs(sIdx - activeIndex) <= 1 ? "eager" : "lazy"}
+                style={{
+                  transform: `translate(${currentX}px, ${currentY}px) scale(${currentScale})`,
+                  transition: isPinching || isDragging ? "none" : "transform 0.25s ease-out",
+                  willChange: "transform",
+                }}
+                className={cn(
+                  "w-full h-full object-cover select-none pointer-events-none transition-transform",
+                  scale > 1 ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
+                )}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Mobile Only: Top-right slide counter pill (e.g., 1/5) */}
+      <div className="md:hidden absolute top-3.5 right-3.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-xs font-semibold text-white tracking-wide shadow-md z-20 pointer-events-none">
+        {activeIndex + 1}/{slides.length}
+      </div>
+
+      {/* Zoom indicator pill when zoomed in */}
+      {scale > 1.15 && (
+        <button
+          onClick={() => {
+            setScale(1);
+            setTranslate({ x: 0, y: 0 });
+          }}
+          className="absolute top-3.5 left-3.5 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[11px] font-medium text-white shadow-md z-20 cursor-pointer active:scale-95 transition-transform"
+        >
+          Reset Zoom ({Math.round(scale * 100)}%)
+        </button>
+      )}
+
+      {/* Left Arrow (Desktop) */}
+      {activeIndex > 0 && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPrev();
+          }}
+          className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-black items-center justify-center shadow-lg transition-all active:scale-95 z-20 cursor-pointer"
+          aria-label="Slide sebelumnya"
+        >
+          <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+        </button>
+      )}
+
+      {/* Right Arrow (Desktop) */}
+      {activeIndex < slides.length - 1 && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onNext();
+          }}
+          className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-black items-center justify-center shadow-lg transition-all active:scale-95 z-20 cursor-pointer"
+          aria-label="Slide berikutnya"
+        >
+          <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+        </button>
+      )}
+
+      {/* Bottom Pagination Dots (Desktop) */}
+      <div className="hidden md:flex absolute bottom-3.5 left-1/2 -translate-x-1/2 items-center gap-1.5 z-20">
+        {slides.map((_, dotIdx) => (
+          <button
+            key={dotIdx}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onIndexChange(dotIdx);
+            }}
+            className={cn(
+              "rounded-full transition-all cursor-pointer shadow-sm",
+              activeIndex === dotIdx
+                ? "w-1.5 h-1.5 bg-white scale-125"
+                : "w-1.5 h-1.5 bg-white/45 hover:bg-white/75"
+            )}
+            aria-label={`Ke slide ${dotIdx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
@@ -412,101 +700,17 @@ export default function Projects() {
                     Padded wrapper + rounded-3xl inner image container
                    ============================================================ */}
                 <div className="w-full md:w-auto md:h-full p-4 sm:p-5 md:p-5 bg-[#121212] flex items-center justify-center shrink-0">
-                  <div className="relative w-full md:w-auto md:h-full aspect-[4/5] rounded-3xl bg-black overflow-hidden flex items-center justify-center select-none border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-                    <AnimatePresence mode="wait" custom={slideDirection}>
-                      <motion.img
-                        key={activeSlideIndex}
-                        src={selectedProject.slides[activeSlideIndex]}
-                        alt={`${selectedProject.title} - Slide ${activeSlideIndex + 1}`}
-                        custom={slideDirection}
-                        variants={{
-                          enter: (direction: number) => ({
-                            x: direction > 0 ? 60 : -60,
-                            opacity: 0,
-                            scale: 1.06,
-                          }),
-                          center: {
-                            x: 0,
-                            opacity: 1,
-                            scale: 1.06,
-                          },
-                          exit: (direction: number) => ({
-                            x: direction > 0 ? -60 : 60,
-                            opacity: 0,
-                            scale: 1.06,
-                          }),
-                        }}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                        drag="x"
-                        dragDirectionLock
-                        dragConstraints={{ left: 0, right: 0 }}
-                        dragElastic={0.2}
-                        onDragEnd={(_, info) => {
-                          if (info.offset.x < -50) nextSlide();
-                          else if (info.offset.x > 50) prevSlide();
-                        }}
-                        style={{ touchAction: "pan-y" }}
-                        className="w-full h-full object-cover cursor-grab active:cursor-grabbing touch-pan-y"
-                      />
-                    </AnimatePresence>
-
-                    {/* Mobile Only: Top-right slide counter pill (e.g., 1/5) */}
-                    <div className="md:hidden absolute top-3.5 right-3.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-xs font-semibold text-white tracking-wide shadow-md z-20 pointer-events-none">
-                      {activeSlideIndex + 1}/{selectedProject.slides.length}
-                    </div>
-
-                    {/* Left Arrow (Hidden on mobile, visible on desktop) */}
-                    {activeSlideIndex > 0 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          prevSlide();
-                        }}
-                        className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/80 hover:bg-white text-black items-center justify-center shadow-md transition-all active:scale-95 z-20 cursor-pointer"
-                        aria-label="Slide sebelumnya"
-                      >
-                        <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
-                      </button>
-                    )}
-
-                    {/* Right Arrow (Hidden on mobile, visible on desktop) */}
-                    {activeSlideIndex < selectedProject.slides.length - 1 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          nextSlide();
-                        }}
-                        className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/80 hover:bg-white text-black items-center justify-center shadow-md transition-all active:scale-95 z-20 cursor-pointer"
-                        aria-label="Slide berikutnya"
-                      >
-                        <ChevronRight className="w-4 h-4 stroke-[2.5]" />
-                      </button>
-                    )}
-
-                    {/* Bottom Pagination Dots (Hidden on mobile, visible on desktop) */}
-                    <div className="hidden md:flex absolute bottom-3.5 left-1/2 -translate-x-1/2 items-center gap-1.5 z-20">
-                      {selectedProject.slides.map((_, sIdx) => (
-                        <button
-                          key={sIdx}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSlideDirection(sIdx >= activeSlideIndex ? 1 : -1);
-                            setActiveSlideIndex(sIdx);
-                          }}
-                          className={cn(
-                            "rounded-full transition-all cursor-pointer shadow-sm",
-                            activeSlideIndex === sIdx
-                              ? "w-1.5 h-1.5 bg-white scale-110"
-                              : "w-1.5 h-1.5 bg-white/45 hover:bg-white/75"
-                          )}
-                          aria-label={`Ke slide ${sIdx + 1}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
+                  <ProjectCarousel
+                    slides={selectedProject.slides}
+                    title={selectedProject.title}
+                    activeIndex={activeSlideIndex}
+                    onIndexChange={(idx) => {
+                      setSlideDirection(idx >= activeSlideIndex ? 1 : -1);
+                      setActiveSlideIndex(idx);
+                    }}
+                    onNext={nextSlide}
+                    onPrev={prevSlide}
+                  />
                 </div>
 
                 {/* ============================================================

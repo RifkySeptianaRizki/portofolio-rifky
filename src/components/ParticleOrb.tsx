@@ -355,9 +355,30 @@ export default function ParticleOrb() {
       animId = requestAnimationFrame(draw);
     }
 
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          if (!isVisible) {
+            isVisible = true;
+            animId = requestAnimationFrame(draw);
+          }
+        } else {
+          isVisible = false;
+          cancelAnimationFrame(animId);
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(canvas);
     animId = requestAnimationFrame(draw);
 
-    return () => cancelAnimationFrame(animId);
+    return () => {
+      cancelAnimationFrame(animId);
+      observer.disconnect();
+    };
   }, []);
 
   return (

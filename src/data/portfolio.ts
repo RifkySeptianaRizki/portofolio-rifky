@@ -47,13 +47,13 @@ export const PORTFOLIO_DATA = {
         "Transparansi rekam jejak penyaluran dana donasi"
       ],
       hashtags: ["#LuminaFund", "#ReactJS", "#NodeJS", "#ExpressJS", "#TailwindCSS", "#FullStackDev"],
-      cover: "/Portofolio/cover-lumina.svg",
+      cover: "/Portofolio/cover-lumina.webp",
       slides: [
-        "/Portofolio/cover-lumina.svg",
-        "/Portofolio/lumina1.svg",
-        "/Portofolio/lumina2.svg",
-        "/Portofolio/lumina3.svg",
-        "/Portofolio/lumina4.svg"
+        "/Portofolio/cover-lumina.webp",
+        "/Portofolio/lumina1.webp",
+        "/Portofolio/lumina2.webp",
+        "/Portofolio/lumina3.webp",
+        "/Portofolio/lumina4.webp"
       ]
     },
     {
@@ -70,13 +70,13 @@ export const PORTFOLIO_DATA = {
         "Manajemen registrasi tim dan jadwal Grand Finals"
       ],
       hashtags: ["#SuperChallenge", "#TournamentEngine", "#ReactJS", "#Supabase", "#Esports", "#WebDev"],
-      cover: "/Portofolio/cover-sc.svg",
+      cover: "/Portofolio/cover-sc.webp",
       slides: [
-        "/Portofolio/cover-sc.svg",
-        "/Portofolio/sc1.svg",
-        "/Portofolio/sc2.svg",
-        "/Portofolio/sc3.svg",
-        "/Portofolio/sc4.svg"
+        "/Portofolio/cover-sc.webp",
+        "/Portofolio/sc1.webp",
+        "/Portofolio/sc2.webp",
+        "/Portofolio/sc3.webp",
+        "/Portofolio/sc4.webp"
       ]
     },
     {
@@ -93,13 +93,13 @@ export const PORTFOLIO_DATA = {
         "Manajemen anggaran & pelacakan transaksi real-time"
       ],
       hashtags: ["#MFinance", "#TypeScript", "#PostgreSQL", "#AIFinance", "#OCR", "#SaaS"],
-      cover: "/Portofolio/cover-finance.svg",
+      cover: "/Portofolio/cover-finance.webp",
       slides: [
-        "/Portofolio/cover-finance.svg",
-        "/Portofolio/finance1.svg",
-        "/Portofolio/finance2.svg",
-        "/Portofolio/finance3.svg",
-        "/Portofolio/finance4.svg"
+        "/Portofolio/cover-finance.webp",
+        "/Portofolio/finance1.webp",
+        "/Portofolio/finance2.webp",
+        "/Portofolio/finance3.webp",
+        "/Portofolio/finance4.webp"
       ]
     },
     {
@@ -116,12 +116,12 @@ export const PORTFOLIO_DATA = {
         "Desain responsif lintas perangkat (Web & Mobile)"
       ],
       hashtags: ["#UMKMUNSAP", "#DigitalStartup", "#ReactJS", "#Flutter", "#RESTfulAPI", "#UNSAP"],
-      cover: "/Portofolio/cover-umkm.svg",
+      cover: "/Portofolio/cover-umkm.webp",
       slides: [
-        "/Portofolio/cover-umkm.svg",
-        "/Portofolio/umkm1.svg",
-        "/Portofolio/umkm2.svg",
-        "/Portofolio/umkm3.svg"
+        "/Portofolio/cover-umkm.webp",
+        "/Portofolio/umkm1.webp",
+        "/Portofolio/umkm2.webp",
+        "/Portofolio/umkm3.webp"
       ]
     },
     {
@@ -138,13 +138,13 @@ export const PORTFOLIO_DATA = {
         "Monitoring masa aktif membership & presensi harian"
       ],
       hashtags: ["#Gym151", "#SaaS", "#ReactJS", "#Supabase", "#ExpressJS", "#WebSystem"],
-      cover: "/Portofolio/cover-gym.svg",
+      cover: "/Portofolio/cover-gym.webp",
       slides: [
-        "/Portofolio/cover-gym.svg",
-        "/Portofolio/gym1.svg",
-        "/Portofolio/gym2.svg",
-        "/Portofolio/gym3.svg",
-        "/Portofolio/gym4.svg"
+        "/Portofolio/cover-gym.webp",
+        "/Portofolio/gym1.webp",
+        "/Portofolio/gym2.webp",
+        "/Portofolio/gym3.webp",
+        "/Portofolio/gym4.webp"
       ]
     },
     {
@@ -161,13 +161,13 @@ export const PORTFOLIO_DATA = {
         "Kontrol operator instan via shortcut keyboard"
       ],
       hashtags: ["#DesakCakades", "#DesaBaginda", "#ReactJS", "#Vite", "#TailwindCSS", "#InteractiveStage"],
-      cover: "/Portofolio/cover-desak.svg",
+      cover: "/Portofolio/cover-desak.webp",
       slides: [
-        "/Portofolio/cover-desak.svg",
-        "/Portofolio/desak1.svg",
-        "/Portofolio/desak2.svg",
-        "/Portofolio/desak3.svg",
-        "/Portofolio/desak4.svg"
+        "/Portofolio/cover-desak.webp",
+        "/Portofolio/desak1.webp",
+        "/Portofolio/desak2.webp",
+        "/Portofolio/desak3.webp",
+        "/Portofolio/desak4.webp"
       ]
     }
   ],
