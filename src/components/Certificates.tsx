@@ -522,7 +522,7 @@ export default function Certificates() {
             </motion.p>
           </div>
 
-          {/* Certificates Grid: Fixed A4 Vertical Preview, 2 columns on Mobile, 3 columns on Desktop */}
+          {/* Certificates Grid: Proportional Compact Preview (Snug fit without excess height), 2 columns on Mobile, 3 columns on Desktop */}
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 md:gap-8">
             {CERTIFICATE_GROUPS.map((group, idx) => (
               <motion.div
@@ -546,7 +546,7 @@ export default function Certificates() {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className={cn(
-                  "group relative overflow-hidden rounded-2xl sm:rounded-[1.5rem] md:rounded-[2rem] aspect-[1/1.414] p-3 sm:p-4 md:p-5 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)]",
+                  "group relative overflow-hidden rounded-2xl sm:rounded-[1.5rem] md:rounded-[2rem] aspect-[1.08/1] p-2.5 sm:p-3.5 md:p-4 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)]",
                   certCardStyles[idx % certCardStyles.length]
                 )}
                 style={{
@@ -556,12 +556,12 @@ export default function Certificates() {
                 }}
               >
                 {/* Top Badge: Category + Item Count */}
-                <div className="flex items-center justify-between gap-2 z-10">
-                  <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold uppercase tracking-wider text-white/50 truncate">
+                <div className="flex items-center justify-between gap-1.5 z-10">
+                  <span className="text-[8px] sm:text-[10px] md:text-xs font-semibold uppercase tracking-wider text-white/50 truncate">
                     {group.category}
                   </span>
                   {group.itemsCount > 1 && (
-                    <div className="flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[9px] sm:text-[11px] font-semibold text-white shadow-sm shrink-0">
+                    <div className="flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[8px] sm:text-[10px] font-semibold text-white shadow-sm shrink-0">
                       <Layers className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/70" />
                       <span>{group.itemsCount}</span>
                     </div>
@@ -569,26 +569,26 @@ export default function Certificates() {
                 </div>
 
                 {/* Center: Full Uncropped Certificate Thumbnail */}
-                <div className="flex-1 w-full my-2 flex items-center justify-center overflow-hidden">
-                  <div className="relative w-full h-full flex items-center justify-center p-1">
+                <div className="flex-1 w-full my-1 sm:my-1.5 flex items-center justify-center overflow-hidden">
+                  <div className="relative w-full h-full flex items-center justify-center p-0.5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={group.cover}
                       alt={group.title}
                       loading="lazy"
-                      className="max-w-full max-h-full object-contain rounded-lg sm:rounded-xl shadow-[0_6px_25px_rgba(0,0,0,0.7)] border border-white/10 transition-transform duration-500 group-hover:scale-[1.04]"
+                      className="max-w-full max-h-full object-contain rounded-md sm:rounded-lg md:rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.7)] border border-white/10 transition-transform duration-500 group-hover:scale-[1.03]"
                     />
                   </div>
                 </div>
 
                 {/* Bottom: Title & Issuer */}
-                <div className="z-10 pt-2 border-t border-white/10">
-                  <h3 className="text-xs sm:text-sm md:text-base font-bold text-white/95 group-hover:text-white line-clamp-1 leading-snug">
+                <div className="z-10 pt-1.5 border-t border-white/10">
+                  <h3 className="text-[11px] sm:text-xs md:text-sm font-bold text-white/95 group-hover:text-white line-clamp-1 leading-snug">
                     {group.title}
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <Award className="w-3 h-3 text-white/40 shrink-0" />
-                    <span className="text-[10px] sm:text-xs text-white/55 truncate">
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <Award className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/40 shrink-0" />
+                    <span className="text-[9px] sm:text-[11px] text-white/55 truncate">
                       {group.issuer}
                     </span>
                   </div>
