@@ -6,6 +6,16 @@ import { CERTIFICATE_GROUPS, CertificateGroup } from "@/data/certificates";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, X, Award, Layers } from "lucide-react";
 
+// Helper card styles matching Projects.tsx subtle background gradients
+const certCardStyles = [
+  "bg-gradient-to-br from-[rgba(28,28,28,0.35)] to-transparent",
+  "bg-gradient-to-br from-[rgba(10,15,28,0.35)] to-transparent",
+  "bg-gradient-to-br from-[rgba(28,26,16,0.35)] to-transparent",
+  "bg-gradient-to-br from-[rgba(16,28,21,0.35)] to-transparent",
+  "bg-gradient-to-br from-[rgba(28,16,28,0.35)] to-transparent",
+  "bg-gradient-to-br from-[rgba(16,22,28,0.35)] to-transparent",
+];
+
 interface CertificateCarouselProps {
   items: CertificateGroup["items"];
   activeIndex: number;
@@ -27,6 +37,7 @@ function CertificateCarousel({
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
+  // Reset zoom whenever the active certificate index changes
   useEffect(() => {
     setScale(1);
     setTranslate({ x: 0, y: 0 });
@@ -56,6 +67,7 @@ function CertificateCarousel({
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length === 2) {
+      // 2 fingers: pinch-to-zoom
       setIsPinching(true);
       setIsDragging(false);
       setDragOffset(0);
@@ -74,6 +86,7 @@ function CertificateCarousel({
       };
     } else if (e.touches.length === 1) {
       const now = Date.now();
+      // Double tap to zoom toggle
       if (now - lastTapRef.current < 280) {
         if (scale > 1.15) {
           setScale(1);
@@ -122,6 +135,7 @@ function CertificateCarousel({
       });
     } else if (e.touches.length === 1) {
       if (scale > 1.05) {
+        // Pan while zoomed
         const deltaX = e.touches[0].clientX - touchStartRef.current.x;
         const deltaY = e.touches[0].clientY - touchStartRef.current.y;
         setTranslate({
@@ -129,6 +143,7 @@ function CertificateCarousel({
           y: touchStartRef.current.transY + deltaY,
         });
       } else if (isDragging) {
+        // 1:1 real-time drag of horizontal carousel
         const deltaX = e.touches[0].clientX - touchStartRef.current.x;
         const deltaY = e.touches[0].clientY - touchStartRef.current.y;
         if (Math.abs(deltaX) > Math.abs(deltaY) || Math.abs(dragOffset) > 5) {
@@ -167,13 +182,13 @@ function CertificateCarousel({
 
   return (
     <div
-      className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[1.414/1] rounded-2xl bg-black/90 overflow-hidden flex items-center justify-center select-none border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.6)] touch-pan-y"
+      className="relative w-full md:w-auto md:h-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[1.414/1] rounded-3xl bg-black overflow-hidden flex items-center justify-center select-none border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] touch-pan-y"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
     >
-      {/* Carousel Track */}
+      {/* Horizontal Carousel Track */}
       <div
         className="flex w-full h-full"
         style={{
@@ -191,7 +206,7 @@ function CertificateCarousel({
           return (
             <div
               key={idx}
-              className="w-full h-full shrink-0 relative overflow-hidden flex items-center justify-center bg-black/40"
+              className="w-full h-full shrink-0 relative overflow-hidden flex items-center justify-center p-2 sm:p-4 bg-black/60"
               onDoubleClick={handleDoubleClick}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -206,7 +221,7 @@ function CertificateCarousel({
                   willChange: "transform",
                 }}
                 className={cn(
-                  "w-full h-full object-contain select-none pointer-events-none transition-transform",
+                  "max-w-full max-h-full object-contain select-none pointer-events-none transition-transform rounded-xl shadow-2xl",
                   scale > 1 ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
                 )}
               />
@@ -215,27 +230,27 @@ function CertificateCarousel({
         })}
       </div>
 
-      {/* Slide counter pill */}
+      {/* Mobile Only: Top-right counter pill (e.g. 1/27) */}
       {items.length > 1 && (
-        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-[11px] font-semibold text-white tracking-wide shadow-md z-20 pointer-events-none">
-          {activeIndex + 1} / {items.length}
+        <div className="md:hidden absolute top-3.5 right-3.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-xs font-semibold text-white tracking-wide shadow-md z-20 pointer-events-none">
+          {activeIndex + 1}/{items.length}
         </div>
       )}
 
-      {/* Reset Zoom Pill */}
+      {/* Zoom reset pill */}
       {scale > 1.15 && (
         <button
           onClick={() => {
             setScale(1);
             setTranslate({ x: 0, y: 0 });
           }}
-          className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[11px] font-medium text-white shadow-md z-20 cursor-pointer active:scale-95"
+          className="absolute top-3.5 left-3.5 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[11px] font-medium text-white shadow-md z-20 cursor-pointer active:scale-95 transition-transform"
         >
           Reset Zoom ({Math.round(scale * 100)}%)
         </button>
       )}
 
-      {/* Left Arrow */}
+      {/* Left Arrow (Desktop) */}
       {activeIndex > 0 && (
         <button
           type="button"
@@ -243,14 +258,14 @@ function CertificateCarousel({
             e.stopPropagation();
             onPrev();
           }}
-          className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center shadow-md border border-white/15 transition-all active:scale-95 z-20 cursor-pointer"
+          className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-black items-center justify-center shadow-lg transition-all active:scale-95 z-20 cursor-pointer"
           aria-label="Sertifikat sebelumnya"
         >
-          <ChevronLeft className="w-5 h-5 stroke-[2]" />
+          <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
         </button>
       )}
 
-      {/* Right Arrow */}
+      {/* Right Arrow (Desktop) */}
       {activeIndex < items.length - 1 && (
         <button
           type="button"
@@ -258,11 +273,34 @@ function CertificateCarousel({
             e.stopPropagation();
             onNext();
           }}
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center shadow-md border border-white/15 transition-all active:scale-95 z-20 cursor-pointer"
+          className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-black items-center justify-center shadow-lg transition-all active:scale-95 z-20 cursor-pointer"
           aria-label="Sertifikat berikutnya"
         >
-          <ChevronRight className="w-5 h-5 stroke-[2]" />
+          <ChevronRight className="w-5 h-5 stroke-[2.5]" />
         </button>
+      )}
+
+      {/* Bottom Dots (Desktop) */}
+      {items.length <= 15 && (
+        <div className="hidden md:flex absolute bottom-3.5 left-1/2 -translate-x-1/2 items-center gap-1.5 z-20">
+          {items.map((_, dotIdx) => (
+            <button
+              key={dotIdx}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onIndexChange(dotIdx);
+              }}
+              className={cn(
+                "rounded-full transition-all cursor-pointer shadow-sm",
+                activeIndex === dotIdx
+                  ? "w-1.5 h-1.5 bg-white scale-125"
+                  : "w-1.5 h-1.5 bg-white/45 hover:bg-white/75"
+              )}
+              aria-label={`Ke sertifikat ${dotIdx + 1}`}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
@@ -271,6 +309,9 @@ function CertificateCarousel({
 export default function Certificates() {
   const [selectedGroup, setSelectedGroup] = useState<CertificateGroup | null>(null);
   const [activeCertIndex, setActiveCertIndex] = useState(0);
+
+  const mobileScrollRef = useRef<HTMLDivElement | null>(null);
+  const desktopScrollRef = useRef<HTMLDivElement | null>(null);
 
   const openGroupModal = (group: CertificateGroup) => {
     setSelectedGroup(group);
@@ -295,9 +336,10 @@ export default function Certificates() {
 
   const isModalOpen = Boolean(selectedGroup);
 
-  // Background scroll lock
+  // Background page scroll lock (matches Projects.tsx)
   useEffect(() => {
     if (!isModalOpen) return;
+
     const scrollY = window.scrollY;
     const html = document.documentElement;
     const body = document.body;
@@ -312,11 +354,102 @@ export default function Certificates() {
     body.style.overflow = "hidden";
     body.style.overscrollBehavior = "none";
 
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    const getActiveScrollContainer = () => {
+      return window.innerWidth < 768
+        ? mobileScrollRef.current
+        : desktopScrollRef.current;
+    };
+
+    const handleWindowScroll = () => {
+      if (window.scrollY !== scrollY) {
+        window.scrollTo({ top: scrollY, left: 0, behavior: "instant" });
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      const scrollEl = getActiveScrollContainer();
+      const target = e.target as Node | null;
+
+      if (!scrollEl || !target || !scrollEl.contains(target)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
+      const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+      const isScrollable = scrollHeight > clientHeight;
+      const isAtTop = e.deltaY < 0 && scrollTop <= 0;
+      const isAtBottom =
+        e.deltaY > 0 && Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+      if (!isScrollable || isAtTop || isAtBottom) {
+        e.preventDefault();
+      }
+      e.stopPropagation();
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 0) return;
+
+      const currentY = e.touches[0].clientY;
+      const currentX = e.touches[0].clientX;
+      const deltaY = touchStartY - currentY;
+      const deltaX = Math.abs(touchStartX - currentX);
+
+      touchStartY = currentY;
+      touchStartX = currentX;
+
+      if (deltaX > Math.abs(deltaY)) {
+        return;
+      }
+
+      const scrollEl = getActiveScrollContainer();
+      const target = e.target as Node | null;
+
+      if (!scrollEl || !target || !scrollEl.contains(target)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
+      const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+      const isScrollable = scrollHeight > clientHeight;
+      const isAtTop = deltaY < 0 && scrollTop <= 0;
+      const isAtBottom =
+        deltaY > 0 && Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+
+      if (!isScrollable || isAtTop || isAtBottom) {
+        e.preventDefault();
+      }
+      e.stopPropagation();
+    };
+
+    window.addEventListener("scroll", handleWindowScroll, { passive: true });
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+
     return () => {
+      window.removeEventListener("scroll", handleWindowScroll);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+
       html.style.overflow = prevHtmlOverflow;
       html.style.overscrollBehavior = prevHtmlOverscroll;
       body.style.overflow = prevBodyOverflow;
       body.style.overscrollBehavior = prevBodyOverscroll;
+
       window.scrollTo({ top: scrollY, left: 0, behavior: "instant" });
     };
   }, [isModalOpen]);
@@ -324,35 +457,45 @@ export default function Certificates() {
   // Keyboard navigation
   useEffect(() => {
     if (!selectedGroup) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeGroupModal();
-      else if (e.key === "ArrowRight") nextCert();
-      else if (e.key === "ArrowLeft") prevCert();
+      if (e.key === "Escape") {
+        closeGroupModal();
+      } else if (e.key === "ArrowRight") {
+        nextCert();
+      } else if (e.key === "ArrowLeft") {
+        prevCert();
+      }
     };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [selectedGroup, closeGroupModal, nextCert, prevCert]);
+
+  const activeItem = selectedGroup ? selectedGroup.items[activeCertIndex] : null;
 
   return (
     <div className="p-2 md:p-3">
       <section
         id="certificates"
-        className="relative w-full overflow-hidden bg-[#050505] rounded-[1.25rem] md:rounded-[1.75rem] flex flex-col pt-16 pb-14 md:pt-20 md:pb-18"
+        className="relative w-full overflow-hidden bg-[#050505] rounded-[1.25rem] md:rounded-[1.75rem] flex flex-col pt-16 pb-12 md:pt-20 md:pb-16"
         style={{ border: "1px solid rgba(255,255,255,0.04)" }}
       >
         <div className="noise-overlay" />
 
-        {/* Subtle glow */}
+        {/* Subtle top glow */}
         <div className="absolute top-[-10%] left-1/2 transform -translate-x-1/2 w-[60%] h-[30%] bg-[#ffffff] opacity-[0.03] blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="container relative z-10 mx-auto px-3.5 sm:px-6 md:px-12">
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 md:px-12">
           {/* Section Header */}
-          <div className="flex flex-col items-center text-center mb-10 md:mb-16 max-w-4xl mx-auto">
+          <div className="flex flex-col items-center text-center mb-12 md:mb-16 max-w-4xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-4xl md:text-5xl lg:text-7xl font-display font-bold tracking-tighter mb-5 leading-[1.1]"
+              className="text-4xl md:text-5xl lg:text-7xl font-display font-bold tracking-tighter mb-8 leading-[1.1]"
             >
               <span
                 style={{
@@ -371,70 +514,81 @@ export default function Certificates() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.15 }}
-              className="text-xs sm:text-sm md:text-base font-medium mx-auto text-center max-w-2xl text-white/60"
+              transition={{ delay: 0.2 }}
+              className="text-sm md:text-base font-medium mx-auto text-center max-w-3xl"
+              style={{ color: "rgba(200,200,200,0.6)" }}
             >
               Verified credentials spanning Artificial Intelligence, Cloud Engineering, Leadership, and Public Speaking.
             </motion.p>
           </div>
 
-          {/* 3x3 Grid on Mobile and Desktop */}
-          <div className="grid grid-cols-3 gap-2.5 sm:gap-4 md:gap-6 lg:gap-8">
+          {/* Certificates Grid: Fixed A4 Vertical Preview, 2 columns on Mobile, 3 columns on Desktop */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6 md:gap-8">
             {CERTIFICATE_GROUPS.map((group, idx) => (
               <motion.div
                 key={group.id}
                 onClick={() => openGroupModal(group)}
-                role="button"
-                tabIndex={0}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     openGroupModal(group);
                   }
                 }}
-                initial={{ opacity: 0, y: 20 }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Buka sertifikat ${group.title}`}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{
-                  duration: 0.5,
-                  delay: idx * 0.06,
+                  duration: 0.6,
+                  delay: (idx % 3) * 0.08,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[1.5rem] bg-[#0c0c0c] border border-white/10 hover:border-white/25 transition-all duration-300 hover:-translate-y-1.5 cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.5)] focus:outline-none focus:ring-2 focus:ring-white/40"
+                className={cn(
+                  "group relative overflow-hidden rounded-2xl sm:rounded-[1.5rem] md:rounded-[2rem] aspect-[1/1.414] p-3 sm:p-4 md:p-5 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/40 shadow-[0_10px_35px_rgba(0,0,0,0.5)]",
+                  certCardStyles[idx % certCardStyles.length]
+                )}
+                style={{
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  boxShadow:
+                    "inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 40px rgba(0,0,0,0.4)",
+                }}
               >
-                {/* Thumbnail Container */}
-                <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-black/60 overflow-hidden flex items-center justify-center border-b border-white/5">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={group.cover}
-                    alt={group.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-
-                  {/* Quantity Badge */}
+                {/* Top Badge: Category + Item Count */}
+                <div className="flex items-center justify-between gap-2 z-10">
+                  <span className="text-[9px] sm:text-[10px] md:text-xs font-semibold uppercase tracking-wider text-white/50 truncate">
+                    {group.category}
+                  </span>
                   {group.itemsCount > 1 && (
-                    <div className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/15 text-[9px] sm:text-[11px] font-semibold text-white shadow-md">
+                    <div className="flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[9px] sm:text-[11px] font-semibold text-white shadow-sm shrink-0">
                       <Layers className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white/70" />
                       <span>{group.itemsCount}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Card Info */}
-                <div className="p-2 sm:p-3.5 md:p-4 flex flex-col flex-1 justify-between bg-gradient-to-b from-[#111111] to-[#0a0a0a]">
-                  <div>
-                    <span className="text-[8px] sm:text-[10px] md:text-xs font-semibold uppercase tracking-wider text-white/45 truncate block">
-                      {group.category}
-                    </span>
-                    <h3 className="text-[10px] sm:text-xs md:text-sm font-bold text-white/90 group-hover:text-white transition-colors line-clamp-2 mt-0.5 sm:mt-1 leading-snug">
-                      {group.title}
-                    </h3>
+                {/* Center: Full Uncropped Certificate Thumbnail */}
+                <div className="flex-1 w-full my-2 flex items-center justify-center overflow-hidden">
+                  <div className="relative w-full h-full flex items-center justify-center p-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={group.cover}
+                      alt={group.title}
+                      loading="lazy"
+                      className="max-w-full max-h-full object-contain rounded-lg sm:rounded-xl shadow-[0_6px_25px_rgba(0,0,0,0.7)] border border-white/10 transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-1 mt-1.5 sm:mt-2.5 pt-1.5 sm:pt-2 border-t border-white/5">
-                    <Award className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-white/40 shrink-0" />
-                    <span className="text-[8px] sm:text-[10px] md:text-xs text-white/50 truncate">
+                {/* Bottom: Title & Issuer */}
+                <div className="z-10 pt-2 border-t border-white/10">
+                  <h3 className="text-xs sm:text-sm md:text-base font-bold text-white/95 group-hover:text-white line-clamp-1 leading-snug">
+                    {group.title}
+                  </h3>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <Award className="w-3 h-3 text-white/40 shrink-0" />
+                    <span className="text-[10px] sm:text-xs text-white/55 truncate">
                       {group.issuer}
                     </span>
                   </div>
@@ -445,7 +599,7 @@ export default function Certificates() {
         </div>
       </section>
 
-      {/* Certificate Modal */}
+      {/* Responsive Certificate Modal (Design Identical to Projects Modal) */}
       <AnimatePresence>
         {selectedGroup && (
           <motion.div
@@ -454,7 +608,7 @@ export default function Certificates() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={closeGroupModal}
-            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-5 md:p-8 overscroll-contain"
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm md:p-6 overscroll-contain touch-none"
             role="dialog"
             aria-modal="true"
             aria-label={selectedGroup.title}
@@ -469,93 +623,143 @@ export default function Certificates() {
               <X className="w-7 h-7 stroke-[2]" />
             </button>
 
-            {/* Modal Box */}
+            {/* Modal Container */}
             <motion.div
               initial={{ scale: 0.96, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.96, opacity: 0 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl max-h-[92vh] bg-[#121212] border border-white/15 rounded-2xl md:rounded-3xl shadow-[0_25px_100px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col"
+              className="relative w-full h-[100dvh] max-h-[100dvh] md:w-auto md:h-[88vh] md:max-h-[820px] md:max-w-[95vw] bg-[#121212] md:border md:border-white/15 md:rounded-3xl shadow-[0_25px_100px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col md:flex-row"
             >
-              {/* Header */}
-              <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-white/10 bg-[#141414] shrink-0">
-                <div className="flex items-center gap-2 truncate">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span className="text-xs sm:text-sm font-semibold text-white truncate">
-                    {selectedGroup.title}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-white/50 font-medium">
-                    {activeCertIndex + 1} / {selectedGroup.items.length}
-                  </span>
-                  <button
-                    onClick={closeGroupModal}
-                    className="p-1 -mr-1 text-white hover:opacity-70 cursor-pointer"
-                    aria-label="Tutup"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
+              {/* ============================================================
+                  MOBILE ONLY: Pinned Top Navigation Bar
+                 ============================================================ */}
+              <div className="flex md:hidden items-center justify-between px-4 py-3 border-b border-white/10 bg-[#121212] shrink-0 z-30">
+                <button
+                  onClick={closeGroupModal}
+                  className="p-1 -ml-1 text-white active:opacity-70 cursor-pointer"
+                  aria-label="Kembali"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <span className="text-sm font-semibold text-white tracking-tight">
+                  Detail Sertifikat
+                </span>
+                <div className="w-6" />
               </div>
 
-              {/* Scrollable Body */}
-              <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 flex flex-col gap-4">
-                {/* Certificate Slide Viewer */}
-                <CertificateCarousel
-                  items={selectedGroup.items}
-                  activeIndex={activeCertIndex}
-                  onIndexChange={setActiveCertIndex}
-                  onNext={nextCert}
-                  onPrev={prevCert}
-                />
+              {/* ============================================================
+                  MOBILE SCROLL CONTAINER / DESKTOP FLEX ROW WRAPPER
+                 ============================================================ */}
+              <div
+                ref={mobileScrollRef}
+                className="flex-1 min-h-0 w-full overflow-y-auto overscroll-contain touch-pan-y flex flex-col md:flex-row md:w-auto md:h-full md:overflow-hidden"
+              >
+                {/* Mobile Certificate Title & Organization Header (Centered) */}
+                <div className="flex md:hidden flex-col items-center text-center px-4 py-3 bg-[#121212] border-b border-white/10 shrink-0">
+                  <h4 className="text-sm font-bold text-white leading-snug">
+                    {selectedGroup.title}
+                  </h4>
+                  <span className="text-xs text-white/60 mt-0.5">
+                    {selectedGroup.issuer}
+                  </span>
+                </div>
 
-                {/* Certificate Info Underneath */}
-                <div className="bg-white/[0.03] border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-5 flex flex-col gap-2">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
-                    <h3 className="text-sm sm:text-base md:text-lg font-bold text-white leading-snug">
-                      {selectedGroup.items[activeCertIndex]?.title}
-                    </h3>
-                    <span className="text-[11px] sm:text-xs font-semibold px-2.5 py-0.5 rounded-full bg-white/10 text-white/80 shrink-0 self-start sm:self-auto">
-                      {selectedGroup.items[activeCertIndex]?.year || "Verified"}
+                {/* ============================================================
+                    LEFT PANEL (Desktop) / CERTIFICATE CAROUSEL (Mobile & Desktop)
+                   ============================================================ */}
+                <div className="w-full md:w-auto md:h-full p-4 sm:p-5 md:p-5 bg-[#121212] flex items-center justify-center shrink-0">
+                  <CertificateCarousel
+                    items={selectedGroup.items}
+                    activeIndex={activeCertIndex}
+                    onIndexChange={setActiveCertIndex}
+                    onNext={nextCert}
+                    onPrev={prevCert}
+                  />
+                </div>
+
+                {/* ============================================================
+                    RIGHT PANEL (Desktop Sidebar) / BOTTOM CONTENT (Mobile)
+                   ============================================================ */}
+                <div className="flex flex-col bg-[#121212] md:w-[360px] lg:w-[405px] md:h-full md:min-h-0 md:border-l md:border-white/10 shrink-0">
+                  {/* Desktop Top Header: Title & Organization Centered */}
+                  <div className="hidden md:flex flex-col items-center text-center px-5 py-4 border-b border-white/10 shrink-0">
+                    <h4 className="text-[15px] font-bold text-white leading-snug">
+                      {selectedGroup.title}
+                    </h4>
+                    <span className="text-xs text-white/60 mt-1">
+                      {selectedGroup.issuer}
                     </span>
                   </div>
 
-                  <span className="text-xs sm:text-sm text-white/60 font-medium">
-                    Penerbit: {selectedGroup.items[activeCertIndex]?.issuer}
-                  </span>
+                  {/* Scrollable Description, Year & Fast Thumbnail Strip */}
+                  <div
+                    ref={desktopScrollRef}
+                    className="md:flex-1 md:min-h-0 md:overflow-y-auto overscroll-contain px-5 py-4 pb-10 md:py-5"
+                  >
+                    <div className="text-xs md:text-[13px] leading-[1.6] text-white/90 space-y-3.5 text-justify">
+                      {/* Active Certificate Heading */}
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-[10px] uppercase tracking-wider font-semibold text-emerald-400">
+                            {selectedGroup.category}
+                          </span>
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/80">
+                            {activeItem?.year || "Verified"}
+                          </span>
+                        </div>
+                        <h5 className="text-sm md:text-base font-bold text-white leading-snug text-left">
+                          {activeItem?.title}
+                        </h5>
+                        <p className="text-[11px] text-white/50 text-left mt-0.5">
+                          {activeItem?.issuer}
+                        </p>
+                      </div>
 
-                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed pt-1.5 border-t border-white/10">
-                    {selectedGroup.items[activeCertIndex]?.description}
-                  </p>
+                      {/* Description */}
+                      <p className="text-white/85 leading-relaxed pt-2 border-t border-white/10">
+                        {activeItem?.description}
+                      </p>
 
-                  {/* Thumbnail Strip for fast switching */}
-                  {selectedGroup.items.length > 1 && (
-                    <div className="pt-3 border-t border-white/10 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                      {selectedGroup.items.map((item, thumbIdx) => (
-                        <button
-                          key={thumbIdx}
-                          onClick={() => setActiveCertIndex(thumbIdx)}
-                          className={cn(
-                            "relative w-14 h-10 sm:w-16 sm:h-11 rounded-lg overflow-hidden border shrink-0 transition-all cursor-pointer",
-                            activeCertIndex === thumbIdx
-                              ? "border-white ring-1 ring-white/50 scale-105"
-                              : "border-white/20 opacity-50 hover:opacity-80"
-                          )}
-                          aria-label={`Lihat sertifikat ${thumbIdx + 1}`}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={item.image}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
-                        </button>
-                      ))}
+                      {/* Fast Switcher Thumbnail Strip for Multiple Certificates */}
+                      {selectedGroup.items.length > 1 && (
+                        <div className="pt-3 border-t border-white/10 text-left">
+                          <span className="text-[11px] font-semibold text-white/60 block mb-2">
+                            Pilih Sertifikat ({activeCertIndex + 1} dari {selectedGroup.items.length}):
+                          </span>
+                          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                            {selectedGroup.items.map((item, thumbIdx) => (
+                              <button
+                                key={thumbIdx}
+                                type="button"
+                                onClick={() => setActiveCertIndex(thumbIdx)}
+                                className={cn(
+                                  "relative w-14 h-10 sm:w-16 sm:h-11 rounded-lg overflow-hidden border shrink-0 transition-all cursor-pointer shadow-sm",
+                                  activeCertIndex === thumbIdx
+                                    ? "border-white ring-2 ring-white/60 scale-105"
+                                    : "border-white/20 opacity-50 hover:opacity-85"
+                                )}
+                                aria-label={`Lihat sertifikat ${thumbIdx + 1}`}
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={item.image}
+                                  alt=""
+                                  loading="lazy"
+                                  className="w-full h-full object-cover"
+                                />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="pt-2 text-[11px] text-white/40 text-left">
+                        Total {selectedGroup.items.length} sertifikat terverifikasi dalam grup ini.
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -565,4 +769,3 @@ export default function Certificates() {
     </div>
   );
 }
-
