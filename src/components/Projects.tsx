@@ -535,7 +535,7 @@ export default function Projects() {
                   filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8))",
                 }}
               >
-                Our recent highlights.
+                Portofolio & Proyek.
               </span>
             </motion.h2>
 
@@ -547,9 +547,7 @@ export default function Projects() {
               className="text-sm md:text-base font-medium mx-auto text-center max-w-3xl"
               style={{ color: "rgba(200,200,200,0.6)" }}
             >
-              Delivering high-impact digital solutions by pushing the boundaries
-              of modern engineering, intuitive design, and scalable
-              architecture.
+              Proyek perangkat lunak dan antarmuka web yang saya kembangkan untuk kebutuhan pendidikan, digitalisasi usaha mahasiswa, operasional, hingga kegiatan masyarakat.
             </motion.p>
           </div>
 
@@ -673,7 +671,7 @@ export default function Projects() {
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 <span className="text-sm font-semibold text-white tracking-tight">
-                  Detail Project
+                  Detail Proyek
                 </span>
                 <div className="w-6" />
               </div>

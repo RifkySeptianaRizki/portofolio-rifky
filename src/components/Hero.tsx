@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Grid3X3, ArrowRight, User, Folder, Sparkles, Clock, HelpCircle, Mail } from "lucide-react";
+import { Plus, Grid3X3, ArrowRight, User, Folder, Sparkles, Clock, HelpCircle, Mail, FileText, Download, ExternalLink, X, ChevronLeft, ChevronRight } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PORTFOLIO_DATA } from "@/data/portfolio";
 
@@ -29,9 +29,50 @@ const InstagramIcon = ({ size = 20 }) => (
   </svg>
 );
 
+const CV_SLIDES = ["/cv-page-1.webp", "/cv-page-2.webp"];
+
 export default function Hero() {
   const [time, setTime] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCvModalOpen, setIsCvModalOpen] = useState(false);
+  const [cvSlideIndex, setCvSlideIndex] = useState(0);
+  const [cvScale, setCvScale] = useState(1);
+  const [cvTranslate, setCvTranslate] = useState({ x: 0, y: 0 });
+  const [cvDragOffset, setCvDragOffset] = useState(0);
+  const [isCvDragging, setIsCvDragging] = useState(false);
+  const [isCvPinching, setIsCvPinching] = useState(false);
+  const cvTouchStartRef = useRef({
+    x: 0,
+    y: 0,
+    dist: 0,
+    scale: 1,
+    transX: 0,
+    transY: 0,
+  });
+  const cvLastTapRef = useRef(0);
+
+  useEffect(() => {
+    setCvScale(1);
+    setCvTranslate({ x: 0, y: 0 });
+    setCvDragOffset(0);
+    setIsCvDragging(false);
+  }, [cvSlideIndex, isCvModalOpen]);
+
+  useEffect(() => {
+    if (!isCvModalOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsCvModalOpen(false);
+      else if (e.key === "ArrowRight") setCvSlideIndex((p) => Math.min(CV_SLIDES.length - 1, p + 1));
+      else if (e.key === "ArrowLeft") setCvSlideIndex((p) => Math.max(0, p - 1));
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isCvModalOpen]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -63,10 +104,15 @@ export default function Hero() {
           className="fixed top-2 md:top-3 left-2 right-2 md:left-3 md:right-3 z-[100] flex items-center justify-between px-5 md:px-10 py-5 md:py-6 pointer-events-none"
         >
           {/* Logo */}
-          {/* Left: Get in touch (Liquid Glass Capsule — Transparent) */}
-          <a
-            href="mailto:rifkiseptianarizki@gmail.com"
-            className="pointer-events-auto group relative flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-bold text-white transition-transform hover:scale-[1.03] active:scale-[0.97] overflow-hidden"
+          {/* Left: Lihat CV (Liquid Glass Capsule — Transparent) */}
+          <button
+            type="button"
+            onClick={() => {
+              setIsMenuOpen(false);
+              setCvSlideIndex(0);
+              setIsCvModalOpen(true);
+            }}
+            className="pointer-events-auto group relative flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-bold text-white transition-transform hover:scale-[1.03] active:scale-[0.97] overflow-hidden cursor-pointer"
             style={{
               background: "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)",
               boxShadow: "0 4px 15px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.15)",
@@ -115,11 +161,11 @@ export default function Hero() {
               }}
             />
             
-            <Plus size={13} strokeWidth={3.5} className="relative z-10 group-hover:rotate-90 transition-transform duration-500" />
-            <span className="relative z-10 tracking-wide drop-shadow-sm">Get in touch</span>
-          </a>
+            <FileText size={13} strokeWidth={2.5} className="relative z-10 transition-transform duration-300 group-hover:scale-110" />
+            <span className="relative z-10 tracking-wide drop-shadow-sm">Lihat CV</span>
+          </button>
 
-          {/* Right: Menu & Status Pill (Liquid Glass Capsule) */}
+          {/* Right: Menu & Hubungi Saya Pill (Liquid Glass Capsule) */}
           <div 
             className="pointer-events-auto relative flex items-center rounded-full overflow-hidden"
             style={{
@@ -172,15 +218,292 @@ export default function Hero() {
 
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="relative z-10 flex items-center gap-1.5 text-white text-[13px] font-bold px-4 py-2 hover:bg-white/10 transition-colors drop-shadow-sm"
+              className="relative z-10 flex items-center gap-1.5 text-white text-[13px] font-bold px-4 py-2 hover:bg-white/10 transition-colors drop-shadow-sm cursor-pointer"
             >
               <Grid3X3 size={13} strokeWidth={2.5} /> Menu
             </button>
-            <span className="relative z-10 hidden sm:flex text-white/70 text-[12px] font-medium px-4 py-2 border-l border-white/20 drop-shadow-sm">
-              Open for projects
-            </span>
+            <a
+              href="mailto:rifkiseptianarizki@gmail.com"
+              className="relative z-10 hidden sm:flex items-center gap-1.5 text-white/85 hover:text-white text-[12px] font-semibold px-3.5 sm:px-4 py-2 border-l border-white/20 hover:bg-white/10 transition-colors drop-shadow-sm"
+            >
+              <Plus size={12} strokeWidth={3} />
+              <span>Hubungi Saya</span>
+            </a>
           </div>
         </motion.nav>
+
+        {/* CV Preview & Download Modal (A4 Exact Fit + Slide Carousel) */}
+        <AnimatePresence>
+          {isCvModalOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsCvModalOpen(false)}
+              className="fixed inset-0 z-[220] flex items-start justify-center pt-8 px-2 pb-2 sm:items-center sm:p-4 md:p-6 bg-black/85 backdrop-blur-md overscroll-contain touch-none"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Preview CV Rifky Septiana Rizki"
+            >
+              <motion.div
+                initial={{ scale: 0.96, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.96, opacity: 0 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-[94vw] max-w-[440px] md:max-w-[95vw] md:w-auto h-auto md:h-[92vh] max-h-[94dvh] md:max-h-[900px] bg-[#121212] border border-white/15 rounded-2xl sm:rounded-3xl shadow-[0_25px_100px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col"
+              >
+                {/* Modal Top Bar */}
+                <div className="flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-5 py-3 border-b border-white/10 bg-[#121212] shrink-0 z-20">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="hidden xs:flex w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 border border-white/15 items-center justify-center shrink-0">
+                      <FileText size={14} className="text-white" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-[11px] sm:text-sm font-bold text-white truncate">
+                        CV Rifky Septiana Rizki
+                      </h3>
+                      <p className="text-[9px] sm:text-[11px] text-white/50 truncate">
+                        Halaman {cvSlideIndex + 1}/{CV_SLIDES.length} • Ukuran A4
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <a
+                      href="/cv"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-white/90 hover:text-white bg-white/[0.08] hover:bg-white/[0.14] border border-white/15 transition-colors"
+                      title="Buka PDF di tab baru"
+                    >
+                      <ExternalLink size={12} />
+                      <span>Buka PDF</span>
+                    </a>
+                    <a
+                      href="/CV-Rifky-Septiana-Rizki.pdf"
+                      download="CV Rifky Septiana Rizki.pdf"
+                      className="inline-flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold text-black bg-white hover:bg-white/90 transition-all shadow-md active:scale-95"
+                    >
+                      <Download size={12} strokeWidth={2.5} />
+                      <span>Download</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setIsCvModalOpen(false)}
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+                      aria-label="Tutup preview CV"
+                    >
+                      <X size={15} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* A4 Vertical Preview Stage with Next/Prev Slide Carousel */}
+                <div className="w-full md:flex-1 md:min-h-0 bg-[#0a0a0a] p-3 sm:p-5 md:px-6 flex items-center justify-center md:gap-4 overflow-hidden">
+                  {/* Left Arrow Outside PDF (Desktop) */}
+                  <button
+                    type="button"
+                    onClick={() => setCvSlideIndex((p) => Math.max(0, p - 1))}
+                    disabled={cvSlideIndex === 0}
+                    className={`hidden md:flex w-10 h-10 rounded-full border items-center justify-center shadow-lg transition-all shrink-0 ${
+                      cvSlideIndex > 0
+                        ? "bg-white/10 hover:bg-white/20 text-white border-white/20 active:scale-95 cursor-pointer"
+                        : "bg-white/[0.03] text-white/20 border-white/5 cursor-not-allowed"
+                    }`}
+                    aria-label="Halaman CV sebelumnya"
+                  >
+                    <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+                  </button>
+
+                  <div
+                    className="relative w-full md:w-auto md:h-full aspect-[210/297] rounded-xl sm:rounded-2xl bg-white overflow-hidden select-none border border-white/15 shadow-[0_12px_45px_rgba(0,0,0,0.75)] touch-none flex items-center justify-center"
+                    onTouchStart={(e) => {
+                      if (e.touches.length === 2) {
+                        setIsCvPinching(true);
+                        setIsCvDragging(false);
+                        setCvDragOffset(0);
+                        const dist = Math.hypot(
+                          e.touches[0].clientX - e.touches[1].clientX,
+                          e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        cvTouchStartRef.current = {
+                          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                          y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+                          dist,
+                          scale: cvScale,
+                          transX: cvTranslate.x,
+                          transY: cvTranslate.y,
+                        };
+                      } else if (e.touches.length === 1) {
+                        const now = Date.now();
+                        if (now - cvLastTapRef.current < 280) {
+                          if (cvScale > 1.15) {
+                            setCvScale(1);
+                            setCvTranslate({ x: 0, y: 0 });
+                          } else {
+                            setCvScale(2.2);
+                          }
+                          cvLastTapRef.current = 0;
+                          return;
+                        }
+                        cvLastTapRef.current = now;
+                        cvTouchStartRef.current = {
+                          x: e.touches[0].clientX,
+                          y: e.touches[0].clientY,
+                          dist: 0,
+                          scale: cvScale,
+                          transX: cvTranslate.x,
+                          transY: cvTranslate.y,
+                        };
+                        if (cvScale <= 1.05) {
+                          setIsCvDragging(true);
+                        }
+                      }
+                    }}
+                    onTouchMove={(e) => {
+                      if (e.touches.length === 2) {
+                        const dist = Math.hypot(
+                          e.touches[0].clientX - e.touches[1].clientX,
+                          e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        const factor = dist / (cvTouchStartRef.current.dist || 1);
+                        const newScale = Math.min(Math.max(1, cvTouchStartRef.current.scale * factor), 4);
+                        setCvScale(newScale);
+                        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                        setCvTranslate({
+                          x: cvTouchStartRef.current.transX + (midX - cvTouchStartRef.current.x),
+                          y: cvTouchStartRef.current.transY + (midY - cvTouchStartRef.current.y),
+                        });
+                      } else if (e.touches.length === 1) {
+                        if (cvScale > 1.05) {
+                          setCvTranslate({
+                            x: cvTouchStartRef.current.transX + (e.touches[0].clientX - cvTouchStartRef.current.x),
+                            y: cvTouchStartRef.current.transY + (e.touches[0].clientY - cvTouchStartRef.current.y),
+                          });
+                        } else if (isCvDragging) {
+                          const deltaX = e.touches[0].clientX - cvTouchStartRef.current.x;
+                          setCvDragOffset(deltaX);
+                        }
+                      }
+                    }}
+                    onTouchEnd={() => {
+                      setIsCvPinching(false);
+                      if (cvScale < 1.1) {
+                        setCvScale(1);
+                        setCvTranslate({ x: 0, y: 0 });
+                      }
+                      if (isCvDragging) {
+                        setIsCvDragging(false);
+                        if (cvDragOffset < -40 && cvSlideIndex < CV_SLIDES.length - 1) {
+                          setCvSlideIndex((p) => p + 1);
+                        } else if (cvDragOffset > 40 && cvSlideIndex > 0) {
+                          setCvSlideIndex((p) => p - 1);
+                        }
+                        setCvDragOffset(0);
+                      }
+                    }}
+                  >
+                    {/* Horizontal Carousel Track */}
+                    <div
+                      className="flex w-full h-full"
+                      style={{
+                        transform: `translateX(calc(-${cvSlideIndex * 100}% + ${cvDragOffset}px))`,
+                        transition: isCvDragging ? "none" : "transform 0.32s cubic-bezier(0.22, 1, 0.36, 1)",
+                        willChange: "transform",
+                      }}
+                    >
+                      {CV_SLIDES.map((pageSrc, idx) => {
+                        const isCurrent = idx === cvSlideIndex;
+                        const currentScale = isCurrent ? cvScale : 1;
+                        const currentX = isCurrent ? cvTranslate.x : 0;
+                        const currentY = isCurrent ? cvTranslate.y : 0;
+                        return (
+                          <div
+                            key={pageSrc}
+                            className="w-full h-full shrink-0 relative overflow-hidden bg-white flex items-center justify-center"
+                            onDoubleClick={() => {
+                              if (cvScale > 1.15) {
+                                setCvScale(1);
+                                setCvTranslate({ x: 0, y: 0 });
+                              } else {
+                                setCvScale(2.2);
+                              }
+                            }}
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={pageSrc}
+                              alt={`CV Rifky Septiana Rizki - Halaman ${idx + 1}`}
+                              draggable={false}
+                              style={{
+                                transform: `translate(${currentX}px, ${currentY}px) scale(${currentScale})`,
+                                transition: isCvPinching || isCvDragging ? "none" : "transform 0.25s ease-out",
+                                willChange: "transform",
+                              }}
+                              className="w-full h-full object-contain select-none pointer-events-none"
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Reset Zoom button */}
+                    {cvScale > 1.15 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCvScale(1);
+                          setCvTranslate({ x: 0, y: 0 });
+                        }}
+                        className="absolute top-3.5 left-3.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-[11px] font-medium text-white shadow-md z-20 cursor-pointer active:scale-95 transition-transform"
+                      >
+                        Reset Zoom ({Math.round(cvScale * 100)}%)
+                      </button>
+                    )}
+
+                    {/* Bottom Pagination Dots (Mobile & Desktop) */}
+                    <div className="flex absolute bottom-2.5 sm:bottom-3.5 left-1/2 -translate-x-1/2 items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-md z-20">
+                      {CV_SLIDES.map((_, dotIdx) => (
+                        <button
+                          key={dotIdx}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCvSlideIndex(dotIdx);
+                          }}
+                          className={`rounded-full transition-all cursor-pointer ${
+                            cvSlideIndex === dotIdx
+                              ? "w-4 h-1.5 bg-white"
+                              : "w-1.5 h-1.5 bg-white/45 hover:bg-white/80"
+                          }`}
+                          aria-label={`Ke halaman ${dotIdx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right Arrow Outside PDF (Desktop) */}
+                  <button
+                    type="button"
+                    onClick={() => setCvSlideIndex((p) => Math.min(CV_SLIDES.length - 1, p + 1))}
+                    disabled={cvSlideIndex === CV_SLIDES.length - 1}
+                    className={`hidden md:flex w-10 h-10 rounded-full border items-center justify-center shadow-lg transition-all shrink-0 ${
+                      cvSlideIndex < CV_SLIDES.length - 1
+                        ? "bg-white/10 hover:bg-white/20 text-white border-white/20 active:scale-95 cursor-pointer"
+                        : "bg-white/[0.03] text-white/20 border-white/5 cursor-not-allowed"
+                    }`}
+                    aria-label="Halaman CV berikutnya"
+                  >
+                    <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Full-screen Menu Overlay */}
         <AnimatePresence>
@@ -261,16 +584,16 @@ export default function Hero() {
                     <Grid3X3 size={14} className="text-white/60" />
                     <span className="text-white text-sm font-semibold tracking-wide">Menu</span>
                   </div>
-                  <span className="text-white/40 text-[11px] font-medium">1/5 slots for August</span>
+                  <span className="text-white/40 text-[11px] font-medium">Sumedang, Jawa Barat</span>
                 </div>
 
                 {/* Main Links */}
                 <div className="flex flex-col gap-1">
                   {[
-                    { name: "Experience", icon: Clock, href: "#experience" },
-                    { name: "Projects", icon: Folder, href: "#projects" },
-                    { name: "Expertise", icon: Sparkles, href: "#expertise" },
-                    { name: "FAQ", icon: HelpCircle, href: "#faq" }
+                    { name: "Pengalaman", icon: Clock, href: "#experience" },
+                    { name: "Proyek", icon: Folder, href: "#projects" },
+                    { name: "Keahlian", icon: Sparkles, href: "#expertise" },
+                    { name: "Tanya Jawab", icon: HelpCircle, href: "#faq" }
                   ].map((item, i) => {
                     const Icon = item.icon;
                     return (
@@ -298,7 +621,7 @@ export default function Hero() {
 
                 {/* Connect */}
                 <div className="mt-4">
-                  <h3 className="text-white/30 text-[11px] font-semibold uppercase tracking-wider mb-4">Connect</h3>
+                  <h3 className="text-white/30 text-[11px] font-semibold uppercase tracking-wider mb-4">Kontak</h3>
                   <div className="grid grid-cols-2 gap-y-4 gap-x-4">
                     {[
                       { name: 'LinkedIn', icon: LinkedinIcon, href: PORTFOLIO_DATA.profile.contact.linkedin },
@@ -393,7 +716,7 @@ export default function Hero() {
                   filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8)) drop-shadow(0px 0px 8px rgba(200,215,225,0.25))"
                 }}
               >
-                Full-Stack Developer, UI/UX Designer & Tech Lead.{" "}
+                Front-End Developer yang berfokus pada pengalaman web ramah pengguna,{" "}
               </span>
               <span 
                 style={{
@@ -403,7 +726,7 @@ export default function Hero() {
                   filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8)) drop-shadow(0px 0px 6px rgba(200,215,225,0.2))"
                 }}
               >
-                Building scalable web apps, managing IT systems, and leading impactful teams.
+                sekaligus aktif memimpin organisasi kampus dan masyarakat.
               </span>
             </div>
           </motion.h1>
@@ -411,31 +734,31 @@ export default function Hero() {
           {/* ─── BOTTOM INFO BAR (Metrics) ─── */}
           <div className="absolute bottom-[22%] md:bottom-[56%] left-0 right-0 z-30 flex items-start justify-between px-5 md:px-10 gap-2 md:gap-4">
             
-            {/* Metric 1 */}
+            {/* Metric 1 (Left) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               transition={{ delay: 0.6, duration: 0.8 }}
               className="flex flex-col gap-0.5 md:gap-1 w-1/3"
             >
-              <span className="text-white font-medium text-[15px] md:text-[18px] tracking-wide">3.68</span>
+              <span className="text-white font-medium text-[15px] md:text-[18px] tracking-wide">06</span>
               <span className="text-white/60 text-[10px] md:text-[12px] leading-[1.3]">
-                GPA (Cum Laude)<br />
-                Informatika UNSAP
+                Proyek Web &<br />
+                Sistem Digital
               </span>
             </motion.div>
 
-            {/* Metric 2 */}
+            {/* Metric 2 (Center) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               transition={{ delay: 0.7, duration: 0.8 }}
               className="flex flex-col gap-0.5 md:gap-1 w-1/3 items-center text-center"
             >
-              <span className="text-white font-medium text-[15px] md:text-[18px] tracking-wide">06+</span>
+              <span className="text-white font-medium text-[15px] md:text-[18px] tracking-wide">3,68</span>
               <span className="text-white/60 text-[10px] md:text-[12px] leading-[1.3]">
-                Production &<br />
-                Community Projects
+                IPK S1 Informatika<br />
+                Universitas Sebelas April
               </span>
             </motion.div>
 
@@ -448,8 +771,8 @@ export default function Hero() {
             >
               <span className="text-white font-medium text-[15px] md:text-[18px] tracking-wide">03+</span>
               <span className="text-white/60 text-[10px] md:text-[12px] leading-[1.3]">
-                Years Dev &<br />
-                Leadership Exp.
+                Tahun Pengalaman<br />
+                Web & Organisasi
               </span>
             </motion.div>
 

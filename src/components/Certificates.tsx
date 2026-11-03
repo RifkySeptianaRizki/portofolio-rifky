@@ -506,7 +506,7 @@ export default function Certificates() {
                   filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8))",
                 }}
               >
-                Honors & certifications.
+                Pelatihan & Sertifikasi.
               </span>
             </motion.h2>
 
@@ -518,7 +518,7 @@ export default function Certificates() {
               className="text-sm md:text-base font-medium mx-auto text-center max-w-3xl"
               style={{ color: "rgba(200,200,200,0.6)" }}
             >
-              Verified credentials spanning Artificial Intelligence, Cloud Engineering, Leadership, and Public Speaking.
+              Dokumentasi pelatihan teknologi, sertifikasi kesiapan kerja, serta bukti keterlibatan aktif dalam kepemimpinan organisasi kampus dan kegiatan masyarakat.
             </motion.p>
           </div>
 

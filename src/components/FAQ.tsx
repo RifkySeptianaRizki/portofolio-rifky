@@ -39,10 +39,10 @@ export default function FAQ() {
                   filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8))"
                 }}
               >
-                Got questions?
+                Ada pertanyaan?
               </span>
               <br />
-              <span className="text-white/40 font-medium">Let's clarify.</span>
+              <span className="text-white/40 font-medium">Berikut penjelasannya.</span>
             </motion.h2>
           </div>
 

@@ -46,7 +46,7 @@ export default function Experience() {
                   filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8))"
                 }}
               >
-                A partner you can trust.
+                Pengalaman & Kepemimpinan.
               </span>
             </motion.h2>
 
@@ -58,7 +58,7 @@ export default function Experience() {
               className="text-sm md:text-base font-medium mx-auto text-center max-w-3xl"
               style={{ color: "rgba(200,200,200,0.6)" }}
             >
-              High standards. Reliable delivery. Proven track record in professional environments.
+              Perjalanan profesional saya dalam pengembangan web, desain visual, dukungan teknis, serta kepemimpinan kegiatan di kampus dan masyarakat.
             </motion.p>
           </div>
 

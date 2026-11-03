@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Rifky Septiana Rizki | Full-Stack Developer & UI/UX Specialist",
-  description: "Personal portfolio of Rifky Septiana Rizki, a software engineer shaping resilient web applications and impactful digital products from Sumedang, Indonesia.",
+  title: "Portofolio Rifky Septiana Rizki",
+  description: "Portofolio Rifky Septiana Rizki, lulusan S1 Informatika Universitas Sebelas April dengan pengalaman pengembangan web, desain antarmuka, dukungan teknis, dan kepemimpinan kegiatan di Sumedang, Jawa Barat.",
 };
 
 export default function RootLayout({

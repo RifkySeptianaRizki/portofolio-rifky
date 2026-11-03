@@ -34,7 +34,7 @@ export default function Expertise() {
                   filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8))"
                 }}
               >
-                My expertise &<br/>your vision.
+                Keahlian Teknis &<br/>Kolaborasi Tim.
               </span>
             </motion.h2>
 
@@ -48,7 +48,7 @@ export default function Expertise() {
                 color: "rgba(200,200,200,0.7)"
               }}
             >
-              A multidisciplinary approach bridging design aesthetics with robust engineering, ensuring reliable delivery.
+              Perpaduan pengembangan antarmuka web, pengelolaan layanan data, operasional TI, dan koordinasi pelaksanaan kegiatan.
             </motion.p>
           </div>
 

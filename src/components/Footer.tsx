@@ -39,7 +39,7 @@ export default function Footer() {
           {/* Left: Heading */}
           <div className="md:col-span-6">
             <h2 className="text-3xl md:text-4xl font-display font-medium text-white tracking-tight">
-              Let's create something<br />extraordinary.
+              Mari berdiskusi dan<br />berkolaborasi.
             </h2>
           </div>
           
@@ -47,7 +47,7 @@ export default function Footer() {
           <div className="md:col-span-6 grid grid-cols-2 gap-8 md:gap-12">
             {/* Column 1: Contact */}
             <div className="flex flex-col gap-4">
-              <h4 className="text-sm font-semibold text-white/40 tracking-wider uppercase mb-2">Connect</h4>
+              <h4 className="text-sm font-semibold text-white/40 tracking-wider uppercase mb-2">Kontak</h4>
               <a href={PORTFOLIO_DATA.profile.contact.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm font-medium">
                 <LinkedinIcon size={16} /> LinkedIn
               </a>
@@ -64,11 +64,11 @@ export default function Footer() {
             
             {/* Column 2: Quick Links */}
             <div className="flex flex-col gap-4">
-              <h4 className="text-sm font-semibold text-white/40 tracking-wider uppercase mb-2">Navigation</h4>
-              <a href="#" className="text-white/70 hover:text-white transition-colors text-sm font-medium">Home</a>
-              <a href="#expertise" className="text-white/70 hover:text-white transition-colors text-sm font-medium">Expertise</a>
-              <a href="#projects" className="text-white/70 hover:text-white transition-colors text-sm font-medium">Projects</a>
-              <a href="#faq" className="text-white/70 hover:text-white transition-colors text-sm font-medium">FAQ</a>
+              <h4 className="text-sm font-semibold text-white/40 tracking-wider uppercase mb-2">Navigasi</h4>
+              <a href="#" className="text-white/70 hover:text-white transition-colors text-sm font-medium">Beranda</a>
+              <a href="#expertise" className="text-white/70 hover:text-white transition-colors text-sm font-medium">Keahlian</a>
+              <a href="#projects" className="text-white/70 hover:text-white transition-colors text-sm font-medium">Proyek</a>
+              <a href="#faq" className="text-white/70 hover:text-white transition-colors text-sm font-medium">Tanya Jawab</a>
             </div>
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function Footer() {
             Rifky Septiana Rizki
           </div>
           <div className="flex gap-6">
-            <span>&copy; {new Date().getFullYear()} All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} Hak cipta dilindungi.</span>
           </div>
         </div>
         
