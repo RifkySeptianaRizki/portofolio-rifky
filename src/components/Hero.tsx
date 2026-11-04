@@ -30,9 +30,13 @@ const InstagramIcon = ({ size = 20 }) => (
 );
 
 const CV_SLIDES = ["/cv-page-1.webp", "/cv-page-2.webp"];
+const HERO_ROLES = ["Software Engineer", "Full-Stack Developer"];
 
 export default function Hero() {
   const [time, setTime] = useState("");
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [typedRole, setTypedRole] = useState(HERO_ROLES[0]);
+  const [isDeletingRole, setIsDeletingRole] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCvModalOpen, setIsCvModalOpen] = useState(false);
   const [cvSlideIndex, setCvSlideIndex] = useState(0);
@@ -88,6 +92,29 @@ export default function Hero() {
     const interval = setInterval(updateTime, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const currentFullRole = HERO_ROLES[roleIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeletingRole && typedRole === currentFullRole) {
+      timeout = setTimeout(() => setIsDeletingRole(true), 2200);
+    } else if (isDeletingRole && typedRole === "") {
+      timeout = setTimeout(() => {
+        setIsDeletingRole(false);
+        setRoleIndex((prev) => (prev + 1) % HERO_ROLES.length);
+      }, 280);
+    } else {
+      const nextText = isDeletingRole
+        ? currentFullRole.slice(0, typedRole.length - 1)
+        : currentFullRole.slice(0, typedRole.length + 1);
+      timeout = setTimeout(() => {
+        setTypedRole(nextText);
+      }, isDeletingRole ? 38 : 75);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [typedRole, isDeletingRole, roleIndex]);
 
   return (
     <div className="p-2 md:p-3 h-[85svh] md:h-screen">
@@ -707,26 +734,61 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="absolute z-20 top-[46%] md:top-[8%] left-[5%] md:left-auto right-auto md:right-[2%] lg:right-[3%] w-[88%] sm:w-[80%] md:max-w-[600px] lg:max-w-[750px] text-[16px] sm:text-[22px] md:text-[28px] lg:text-[32px] font-medium leading-[1.2] tracking-[-0.02em] text-left"
           >
-            <div className="relative z-10">
-              <span 
-                style={{
-                  background: "linear-gradient(110deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 20%, rgba(255,255,255,1) 40%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.9) 80%, rgba(255,255,255,1) 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8)) drop-shadow(0px 0px 8px rgba(200,215,225,0.25))"
-                }}
-              >
-                Front-End Developer yang berfokus pada pengalaman web ramah pengguna,{" "}
+            <div
+              className="relative z-10"
+              style={{
+                filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8)) drop-shadow(0px 0px 8px rgba(200,215,225,0.25))",
+              }}
+            >
+              <span className="inline-grid items-baseline text-left align-baseline mr-[0.26em]">
+                <span
+                  aria-hidden="true"
+                  className="col-start-1 row-start-1 invisible pointer-events-none select-none whitespace-nowrap pr-[4px]"
+                >
+                  Full-Stack Developer
+                </span>
+                <span
+                  className="col-start-1 row-start-1 whitespace-nowrap"
+                  style={{
+                    letterSpacing: roleIndex === 0 ? "0.032em" : "-0.02em",
+                    wordSpacing: roleIndex === 0 ? "0.04em" : "0em",
+                  }}
+                >
+                  <span
+                    style={{
+                      backgroundImage: "linear-gradient(110deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 20%, rgba(255,255,255,1) 40%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.9) 80%, rgba(255,255,255,1) 100%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {typedRole}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="inline-block w-[2px] h-[0.85em] bg-white/90 ml-[2px] align-baseline translate-y-[0.08em] animate-pulse"
+                  />
+                </span>
               </span>
-              <span 
+              <span
                 style={{
-                  background: "linear-gradient(110deg, rgba(200,200,200,0.9) 0%, rgba(150,150,150,0.5) 20%, rgba(200,200,200,0.8) 40%, rgba(100,100,100,0.3) 60%, rgba(180,180,180,0.7) 80%, rgba(200,200,200,0.9) 100%)",
+                  backgroundImage: "linear-gradient(110deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 20%, rgba(255,255,255,1) 40%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0.9) 80%, rgba(255,255,255,1) 100%)",
                   WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
                   WebkitTextFillColor: "transparent",
-                  filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.8)) drop-shadow(0px 0px 6px rgba(200,215,225,0.2))"
                 }}
               >
-                sekaligus aktif memimpin organisasi kampus dan masyarakat.
+                berfokus pada pengembangan web end-to-end dan integrasi API,{" "}
+              </span>
+              <span
+                style={{
+                  backgroundImage: "linear-gradient(110deg, rgba(200,200,200,0.9) 0%, rgba(150,150,150,0.5) 20%, rgba(200,200,200,0.8) 40%, rgba(100,100,100,0.3) 60%, rgba(180,180,180,0.7) 80%, rgba(200,200,200,0.9) 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                didukung kepemimpinan aktif di lingkungan kampus dan masyarakat.
               </span>
             </div>
           </motion.h1>
